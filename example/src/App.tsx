@@ -1,18 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-nacl-jsi';
+import { helloJsi } from 'react-native-nacl-jsi';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>{helloJsi()}</Text>
     </View>
   );
 }

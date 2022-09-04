@@ -1,8 +1,12 @@
-#ifndef EXAMPLE_H
-#define EXAMPLE_H
+#include <jsi/jsilib.h>
+#include <jsi/jsi.h>
 
-namespace example {
-  int multiply(double a, double b);
+#ifndef REACT_NATIVE_NACL_H
+#define REACT_NATIVE_NACL_H
+
+namespace react_native_nacl {
+  void install(facebook::jsi::Runtime& jsiRuntime);
+  void cleanup();
 }
 
-#endif /* EXAMPLE_H */
+#endif

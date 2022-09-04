@@ -1,7 +1,7 @@
 {
   "name": "react-native-nacl-jsi",
   "version": "0.1.0",
-  "description": "test",
+  "description": "Sodium for React Native with JSI binding",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -28,7 +28,9 @@
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn && yarn example pods"
+    "bootstrap": "yarn example && yarn && yarn example pods",
+    "postinstall": "tar -xzf precompiled.tgz",
+    "rebuild": "./build.sh"
   },
   "keywords": [
     "react-native",
@@ -36,7 +38,7 @@
     "android"
   ],
   "repository": "https://github.com/remyd/react-native-nacl-jsi",
-  "author": "Remy Dautriche <remy.dautriche@gmail.com> (https://github.com/remyd)",
+  "author": "Remy Dautriche <hi@withpace.io> (https://github.com/remyd)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/remyd/react-native-nacl-jsi/issues"

@@ -1,20 +1,13 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
 
-const LINKING_ERROR =
-  `The package 'react-native-nacl-jsi' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo managed workflow\n';
+const g = global as any;
+const NaClModule = NativeModules.NaclJsi;
+console.log(NaClModule);
 
-const NaclJsi = NativeModules.NaclJsi  ? NativeModules.NaclJsi  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+if (NaClModule && typeof NaClModule.install === 'function') {
+  NaClModule.install();
+}
 
-export function multiply(a: number, b: number): Promise<number> {
-  return NaclJsi.multiply(a, b);
+export function helloJsi(): string {
+  return g.helloJsi();
 }
