@@ -1,8 +1,7 @@
 #import <React/RCTBridgeModule.h>
 
-#ifdef __cplusplus
 #import "react-native-nacl-jsi.h"
-#endif
+#import "sodium.h"
 
 @interface NaclJsi : NSObject <RCTBridgeModule>
 @property (nonatomic, assign) BOOL setBridgeOnMainQueue;

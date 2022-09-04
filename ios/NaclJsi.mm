@@ -1,6 +1,7 @@
-#import "NaclJsi.h"
 #import <React/RCTBridge+Private.h>
 #import <React/RCTUtils.h>
+
+#import "NaclJsi.h"
 
 @implementation NaclJsi
 
@@ -13,8 +14,7 @@ RCT_EXPORT_MODULE()
   return YES;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
   _setBridgeOnMainQueue = RCTIsMainQueue();
   

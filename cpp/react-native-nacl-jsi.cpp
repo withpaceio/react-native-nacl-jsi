@@ -1,9 +1,14 @@
+#include "sodium.h"
 #include "react-native-nacl-jsi.h"
 
 using namespace facebook;
 
 namespace react_native_nacl {
 	void install(jsi::Runtime& jsiRuntime) {
+		if (sodium_init() == -1) {
+			jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] sodium_init() failed");
+		}
+
 		auto helloJsi = jsi::Function::createFromHostFunction(
 			jsiRuntime,
 			jsi::PropNameID::forAscii(jsiRuntime, "helloJsi"),
