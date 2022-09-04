@@ -34,6 +34,8 @@ add_library(cpp
   SHARED
   ${libPath}
   ../cpp/react-native-nacl-jsi.cpp
+  ../cpp/secretbox.cpp
+  ../cpp/utils.cpp
   cpp-adapter.cpp
 )
 

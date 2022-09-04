@@ -1,5 +1,9 @@
-#include "sodium.h"
+#include <string>
+#include <vector>
+
 #include "react-native-nacl-jsi.h"
+#include "secretbox.h"
+#include "sodium.h"
 
 using namespace facebook;
 
@@ -9,16 +13,7 @@ namespace react_native_nacl {
 			jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] sodium_init() failed");
 		}
 
-		auto helloJsi = jsi::Function::createFromHostFunction(
-			jsiRuntime,
-			jsi::PropNameID::forAscii(jsiRuntime, "helloJsi"),
-			0,
-			[](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-				return jsi::Value(jsi::String::createFromUtf8(jsiRuntime, "Hello JSI!"));
-			}
-		);
-
-		jsiRuntime.global().setProperty(jsiRuntime, "helloJsi", std::move(helloJsi));
+		install_secret_box(jsiRuntime);
 	}
 
 	void cleanup() {

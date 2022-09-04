@@ -1,12 +1,16 @@
 import React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { helloJsi } from 'react-native-nacl-jsi';
+import { secretboxGenerateKey, secretboxSeal } from 'react-native-nacl-jsi';
 
 export default function App() {
+  const secretKey = secretboxGenerateKey();
+  const encryptedMessage = secretboxSeal('hello', secretKey);
+
   return (
     <View style={styles.container}>
-      <Text>{helloJsi()}</Text>
+      <Text>{secretKey}</Text>
+      <Text>{encryptedMessage}</Text>
     </View>
   );
 }
