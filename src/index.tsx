@@ -13,6 +13,22 @@ export function boxGenerateKey(): KeyPair {
   return g.boxGenerateKey();
 }
 
+export function boxSeal(
+  message: string,
+  recipientPublicKey: string,
+  senderSecretKey: string
+): string {
+  return g.boxSeal(message, recipientPublicKey, senderSecretKey);
+}
+
+export function boxOpen(
+  encryptedMessage: string,
+  senderPublicKey: string,
+  recipientSecretKey: string
+): string {
+  return g.boxOpen(encryptedMessage, senderPublicKey, recipientSecretKey);
+}
+
 export function secretboxGenerateKey(): string {
   return g.secretboxGenerateKey();
 }

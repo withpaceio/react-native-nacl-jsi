@@ -6,15 +6,27 @@ import {
   secretboxSeal,
   secretboxOpen,
   boxGenerateKey,
+  boxSeal,
+  boxOpen,
 } from 'react-native-nacl-jsi';
 
 export default function App() {
   const secretKey = secretboxGenerateKey();
-  const encryptedMessage = secretboxSeal('hello pace!', secretKey);
+  const encryptedMessage = secretboxSeal('hello!', secretKey);
   const decryptedMessage = secretboxOpen(encryptedMessage, secretKey);
 
-  const keyPair = boxGenerateKey();
-  console.debug(keyPair);
+  const recipientKeyPair = boxGenerateKey();
+  const senderKeyPair = boxGenerateKey();
+  const boxEncryptedMessage = boxSeal(
+    'hello with box encryption!',
+    recipientKeyPair.publicKey,
+    senderKeyPair.secretKey
+  );
+  const boxDecryptedMessage = boxOpen(
+    boxEncryptedMessage,
+    senderKeyPair.publicKey,
+    recipientKeyPair.secretKey
+  );
 
   return (
     <View style={styles.container}>
@@ -28,10 +40,9 @@ export default function App() {
       <Text>---</Text>
       <Text>BOX</Text>
       <Text>---</Text>
-      <Text>Key pair:</Text>
-      <Text>Public: {keyPair.publicKey}</Text>
-      <Text>Secret: {keyPair.secretKey}</Text>
+      <Text>nonce + cipher text: {boxEncryptedMessage}</Text>
       <Text>---</Text>
+      <Text>clear text: {boxDecryptedMessage}</Text>
     </View>
   );
 }
@@ -42,10 +53,5 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     width: '100%',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
   },
 });
