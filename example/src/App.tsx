@@ -8,9 +8,19 @@ import {
   boxGenerateKey,
   boxSeal,
   boxOpen,
+  aesGenerateKey,
+  aesEncrypt,
+  aesDecrypt,
 } from 'react-native-nacl-jsi';
 
 export default function App() {
+  const aesKey = aesGenerateKey();
+  const { encrypted: aesEncryptedMessage, iv } = aesEncrypt(
+    'hello aes!',
+    aesKey
+  );
+  const aesDecryptedMessage = aesDecrypt(aesEncryptedMessage, aesKey, iv);
+
   const secretKey = secretboxGenerateKey();
   const encryptedMessage = secretboxSeal('hello!', secretKey);
   const decryptedMessage = secretboxOpen(encryptedMessage, secretKey);
@@ -30,6 +40,14 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Text>AES256-GCM</Text>
+      <Text>---</Text>
+      <Text>Key: {aesKey}</Text>
+      <Text>---</Text>
+      <Text>cipher text: {aesEncryptedMessage}</Text>
+      <Text>---</Text>
+      <Text>clear text: {aesDecryptedMessage}</Text>
+      <Text>---</Text>
       <Text>SECRET BOX</Text>
       <Text>---</Text>
       <Text>secret key: {secretKey}</Text>

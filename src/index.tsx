@@ -1,12 +1,28 @@
 import { NativeModules } from 'react-native';
 
-import type { KeyPair } from './types';
+import type { AesResult, KeyPair } from './types';
 
 const g = global as any;
 const NaClModule = NativeModules.NaclJsi;
 
 if (NaClModule && typeof NaClModule.install === 'function') {
   NaClModule.install();
+}
+
+export function aesGenerateKey(): string {
+  return g.aesGenerateKey();
+}
+
+export function aesEncrypt(message: string, key: string): AesResult {
+  return g.aesEncrypt(message, key);
+}
+
+export function aesDecrypt(
+  encryptedMessage: string,
+  key: string,
+  iv: string
+): string {
+  return g.aesDecrypt(encryptedMessage, key, iv);
 }
 
 export function boxGenerateKey(): KeyPair {

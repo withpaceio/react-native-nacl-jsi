@@ -34,6 +34,7 @@ add_library(cpp
   SHARED
   ${libPath}
   ../cpp/react-native-nacl-jsi.cpp
+  ../cpp/aes.cpp
   ../cpp/box.cpp
   ../cpp/secretbox.cpp
   ../cpp/utils.cpp
