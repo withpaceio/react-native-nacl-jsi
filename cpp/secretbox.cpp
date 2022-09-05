@@ -61,13 +61,16 @@ namespace react_native_nacl {
 				std::string nonce_cipher_text_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
 				std::string secret_key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
 
+				std::vector<u_int8_t> secret_key = base64ToBin(jsiRuntime, secret_key_string);
+				if (secret_key.size() != crypto_secretbox_KEYBYTES) {
+					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_secretbox_open_easy wrong key length");
+				}
+
 				std::vector<uint8_t> nonce_cipher_text = base64ToBin(jsiRuntime, nonce_cipher_text_string);
 				std::vector<uint8_t> nonce(crypto_secretbox_NONCEBYTES);
 				std::move(nonce_cipher_text.begin(), nonce_cipher_text.begin() + crypto_secretbox_NONCEBYTES, nonce.begin());
 				std::vector<uint8_t> cipher_text(nonce_cipher_text.size() - nonce.size());
 				std::move(nonce_cipher_text.begin() + crypto_secretbox_NONCEBYTES, nonce_cipher_text.end(), cipher_text.begin());
-
-				std::vector<u_int8_t> secret_key = base64ToBin(jsiRuntime, secret_key_string);
 
 				std::vector<uint8_t> message(cipher_text.size());
 				if (crypto_secretbox_open_easy(message.data(), cipher_text.data(), message.size(), nonce.data(), secret_key.data()) != 0) {
