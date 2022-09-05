@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 
+#include "box.h"
 #include "react-native-nacl-jsi.h"
 #include "secretbox.h"
 #include "sodium.h"
@@ -13,6 +14,7 @@ namespace react_native_nacl {
 			jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] sodium_init() failed");
 		}
 
+		install_box(jsiRuntime);
 		install_secret_box(jsiRuntime);
 	}
 
