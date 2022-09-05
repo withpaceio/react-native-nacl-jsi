@@ -14,3 +14,7 @@ export function secretboxGenerateKey(): string {
 export function secretboxSeal(message: string, secretKey: string): string {
   return g.secretboxSeal(message, secretKey);
 }
+
+export function secretboxOpen(cipherText: string, secretKey: string): string {
+  return g.secretboxOpen(cipherText, secretKey);
+}
