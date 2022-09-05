@@ -22,13 +22,13 @@ export default function App() {
   const aesDecryptedMessage = aesDecrypt(aesEncryptedMessage, aesKey, iv);
 
   const secretKey = secretboxGenerateKey();
-  const encryptedMessage = secretboxSeal('hello!', secretKey);
+  const encryptedMessage = secretboxSeal('hello with secretbox!', secretKey);
   const decryptedMessage = secretboxOpen(encryptedMessage, secretKey);
 
   const recipientKeyPair = boxGenerateKey();
   const senderKeyPair = boxGenerateKey();
   const boxEncryptedMessage = boxSeal(
-    'hello with box encryption!',
+    'hello with box!',
     recipientKeyPair.publicKey,
     senderKeyPair.secretKey
   );
@@ -40,27 +40,28 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>AES256-GCM</Text>
-      <Text>---</Text>
-      <Text>Key: {aesKey}</Text>
-      <Text>---</Text>
-      <Text>cipher text: {aesEncryptedMessage}</Text>
-      <Text>---</Text>
-      <Text>clear text: {aesDecryptedMessage}</Text>
-      <Text>---</Text>
-      <Text>SECRET BOX</Text>
-      <Text>---</Text>
-      <Text>secret key: {secretKey}</Text>
-      <Text>---</Text>
-      <Text>nonce + cipher text: {encryptedMessage}</Text>
-      <Text>---</Text>
-      <Text>clear text: {decryptedMessage}</Text>
-      <Text>---</Text>
-      <Text>BOX</Text>
-      <Text>---</Text>
-      <Text>nonce + cipher text: {boxEncryptedMessage}</Text>
-      <Text>---</Text>
-      <Text>clear text: {boxDecryptedMessage}</Text>
+      <View style={styles.algorithmContainer}>
+        <Text style={styles.algorithmName}>AES256-GCM</Text>
+        <Text>Key: {aesKey}</Text>
+        <Text>---</Text>
+        <Text>cipher text: {aesEncryptedMessage}</Text>
+        <Text>---</Text>
+        <Text>clear text: {aesDecryptedMessage}</Text>
+      </View>
+      <View style={styles.algorithmContainer}>
+        <Text style={styles.algorithmName}>SECRET BOX</Text>
+        <Text>secret key: {secretKey}</Text>
+        <Text>---</Text>
+        <Text>nonce + cipher text: {encryptedMessage}</Text>
+        <Text>---</Text>
+        <Text>clear text: {decryptedMessage}</Text>
+      </View>
+      <View style={styles.algorithmContainer}>
+        <Text style={styles.algorithmName}>BOX</Text>
+        <Text>nonce + cipher text: {boxEncryptedMessage}</Text>
+        <Text>---</Text>
+        <Text>clear text: {boxDecryptedMessage}</Text>
+      </View>
     </View>
   );
 }
@@ -71,5 +72,18 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     width: '100%',
+  },
+  algorithmContainer: {
+    width: '100%',
+    paddingBottom: 20,
+    borderBottomColor: 'black',
+    backgroundColor: '#eee',
+    marginBottom: 10,
+    padding: 10,
+  },
+  algorithmName: {
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
