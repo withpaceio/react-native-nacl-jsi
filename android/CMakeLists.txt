@@ -35,6 +35,7 @@ add_library(cpp
   ${libPath}
   ../cpp/react-native-nacl-jsi.cpp
   ../cpp/aes.cpp
+  ../cpp/argon2id.cpp
   ../cpp/box.cpp
   ../cpp/secretbox.cpp
   ../cpp/utils.cpp
