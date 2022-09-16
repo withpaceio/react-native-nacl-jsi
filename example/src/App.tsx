@@ -11,6 +11,10 @@ import {
   aesGenerateKey,
   aesEncrypt,
   aesDecrypt,
+  argon2idHash,
+  argon2idVerify,
+  ARGON2ID_OPSLIMIT_SENSITIVE,
+  ARGON2ID_MEMLIMIT_INTERACTIVE,
 } from 'react-native-nacl-jsi';
 
 export default function App() {
@@ -38,6 +42,14 @@ export default function App() {
     recipientKeyPair.secretKey
   );
 
+  const password = 'secure_password1234)';
+  const hashedPassword = argon2idHash(
+    password,
+    ARGON2ID_OPSLIMIT_SENSITIVE,
+    ARGON2ID_MEMLIMIT_INTERACTIVE
+  );
+  const isVerified = argon2idVerify(hashedPassword, password);
+
   return (
     <View style={styles.container}>
       <View style={styles.algorithmContainer}>
@@ -61,6 +73,14 @@ export default function App() {
         <Text>nonce + cipher text: {boxEncryptedMessage}</Text>
         <Text>---</Text>
         <Text>clear text: {boxDecryptedMessage}</Text>
+      </View>
+      <View style={styles.algorithmContainer}>
+        <Text style={styles.algorithmName}>Argon2id</Text>
+        <Text>Password: {password}</Text>
+        <Text>---</Text>
+        <Text>Hash: {hashedPassword}</Text>
+        <Text>---</Text>
+        <Text>Is verified: {isVerified ? 'true' : 'false'}</Text>
       </View>
     </View>
   );

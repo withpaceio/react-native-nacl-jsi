@@ -9,25 +9,18 @@ namespace react_native_nacl {
     auto argon2idHash = jsi::Function::createFromHostFunction(
       jsiRuntime,
       jsi::PropNameID::forAscii(jsiRuntime, "argon2idHash"),
-      5,
+      3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
 				std::string password_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-				std::string salt_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-        int hash_length = arguments[2].asNumber();
-				int iterations = arguments[3].asNumber();
-        int memory_limit = arguments[4].asNumber();
+				int iterations = arguments[1].asNumber();
+        int memory_limit = arguments[2].asNumber();
 
-        std::vector<uint8_t> salt = base64ToBin(jsiRuntime, salt_string);
-        if (salt.size() != crypto_pwhash_SALTBYTES) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash_str wrong salt length");
-        }
-
-        std::vector<uint8_t> hashed_password(crypto_pwhash_STRBYTES);
-        if (crypto_pwhash((uint8_t *)hashed_password.data(), hash_length, password_string.data(), password_string.size(), salt.data(), iterations, memory_limit, crypto_pwhash_ALG_ARGON2ID13) != 0) {
+        char hashed_password[crypto_pwhash_STRBYTES];
+        if (crypto_pwhash_str(hashed_password, password_string.data(), password_string.size(), iterations, memory_limit)) {
 					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash_str out of memory");
         }
 
-				return jsi::String::createFromUtf8(jsiRuntime, binToBase64(hashed_password.data(), hashed_password.size(), sodium_base64_VARIANT_ORIGINAL));
+				return jsi::String::createFromUtf8(jsiRuntime, hashed_password);
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "argon2idHash", std::move(argon2idHash));

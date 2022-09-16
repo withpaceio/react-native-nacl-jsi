@@ -4,6 +4,8 @@
 #include "aes.h"
 #include "argon2id.h"
 #include "box.h"
+#include "constants.h"
+#include "random.h"
 #include "react-native-nacl-jsi.h"
 #include "secretbox.h"
 #include "sodium.h"
@@ -19,6 +21,8 @@ namespace react_native_nacl {
 		install_aes(jsiRuntime);
 		install_argon2id(jsiRuntime);
 		install_box(jsiRuntime);
+		install_constants(jsiRuntime);
+		install_random(jsiRuntime);
 		install_secret_box(jsiRuntime);
 	}
 

@@ -11,10 +11,6 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "aesGenerateKey"),
       0,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        if (crypto_aead_aes256gcm_is_available() == 0) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_keygen is not supported on this CPU");
-        }
-
         std::vector<uint8_t> key(crypto_aead_aes256gcm_KEYBYTES);
         crypto_aead_aes256gcm_keygen(key.data());
 
@@ -28,10 +24,6 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "aesEncrypt"),
       2,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        if (crypto_aead_aes256gcm_is_available() == 0) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_encrypt is not supported on this CPU");
-        }
-
 				std::string message_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
 				std::string key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
 
@@ -65,10 +57,6 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "aesDecrypt"),
       3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        if (crypto_aead_aes256gcm_is_available() == 0) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt is not supported on this CPU");
-        }
-
         std::string cipher_text_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
         std::string key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
         std::string nonce_string = arguments[2].asString(jsiRuntime).utf8(jsiRuntime);

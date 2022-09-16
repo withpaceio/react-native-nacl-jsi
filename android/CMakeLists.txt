@@ -37,6 +37,8 @@ add_library(cpp
   ../cpp/aes.cpp
   ../cpp/argon2id.cpp
   ../cpp/box.cpp
+  ../cpp/constants.cpp
+  ../cpp/random.cpp
   ../cpp/secretbox.cpp
   ../cpp/utils.cpp
   cpp-adapter.cpp
