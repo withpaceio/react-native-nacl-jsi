@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, Text } from 'react-native';
 import {
   secretboxGenerateKey,
   secretboxSeal,
@@ -51,46 +51,46 @@ export default function App() {
   const isVerified = argon2idVerify(hashedPassword, password);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.algorithmContainer}>
-        <Text style={styles.algorithmName}>AES256-GCM</Text>
-        <Text>Key: {aesKey}</Text>
-        <Text>---</Text>
-        <Text>cipher text: {aesEncryptedMessage}</Text>
-        <Text>---</Text>
-        <Text>clear text: {aesDecryptedMessage}</Text>
-      </View>
-      <View style={styles.algorithmContainer}>
-        <Text style={styles.algorithmName}>SECRET BOX</Text>
-        <Text>secret key: {secretKey}</Text>
-        <Text>---</Text>
-        <Text>nonce + cipher text: {encryptedMessage}</Text>
-        <Text>---</Text>
-        <Text>clear text: {decryptedMessage}</Text>
-      </View>
-      <View style={styles.algorithmContainer}>
-        <Text style={styles.algorithmName}>BOX</Text>
-        <Text>nonce + cipher text: {boxEncryptedMessage}</Text>
-        <Text>---</Text>
-        <Text>clear text: {boxDecryptedMessage}</Text>
-      </View>
-      <View style={styles.algorithmContainer}>
-        <Text style={styles.algorithmName}>Argon2id</Text>
-        <Text>Password: {password}</Text>
-        <Text>---</Text>
-        <Text>Hash: {hashedPassword}</Text>
-        <Text>---</Text>
-        <Text>Is verified: {isVerified ? 'true' : 'false'}</Text>
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <View style={styles.algorithmContainer}>
+          <Text style={styles.algorithmName}>AES256-GCM</Text>
+          <Text>Key: {aesKey}</Text>
+          <Text>---</Text>
+          <Text>cipher text: {aesEncryptedMessage}</Text>
+          <Text>---</Text>
+          <Text>clear text: {aesDecryptedMessage}</Text>
+        </View>
+        <View style={styles.algorithmContainer}>
+          <Text style={styles.algorithmName}>SECRET BOX</Text>
+          <Text>secret key: {secretKey}</Text>
+          <Text>---</Text>
+          <Text>nonce + cipher text: {encryptedMessage}</Text>
+          <Text>---</Text>
+          <Text>clear text: {decryptedMessage}</Text>
+        </View>
+        <View style={styles.algorithmContainer}>
+          <Text style={styles.algorithmName}>BOX</Text>
+          <Text>nonce + cipher text: {boxEncryptedMessage}</Text>
+          <Text>---</Text>
+          <Text>clear text: {boxDecryptedMessage}</Text>
+        </View>
+        <View style={styles.algorithmContainer}>
+          <Text style={styles.algorithmName}>Argon2id</Text>
+          <Text>Password: {password}</Text>
+          <Text>---</Text>
+          <Text>Hash: {hashedPassword}</Text>
+          <Text>---</Text>
+          <Text>Is verified: {isVerified ? 'true' : 'false'}</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
     width: '100%',
   },
   algorithmContainer: {
