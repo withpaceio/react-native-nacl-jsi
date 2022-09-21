@@ -2,10 +2,37 @@
 
 Sodium library for React Native with JSI binding.
 
+Precompiled binaries of [libsodium](https://libsodium.org) will be linked by default.
+Optionally, you can choose to compile libsodium by yourself (run **npm&nbsp;run&nbsp;rebuild** in package directory). Source code will be downloaded and verified before compilation.
+
+## Source compilation
+
+### MacOS prerequisites
+
+- libtool (macports, homebrew)
+- autoconf (macports, homebrew)
+- automake (macports, homebrew)
+- Xcode (12 or newer)
+
+### Android prerequisites
+
+- Android NDK
+- CMake
+- LLDB
+
+### Recompile
+
+```sh
+npm run rebuild
+```
+
 ## Installation
+
+Using Hermes on Android is required.
 
 ```sh
 npm install react-native-nacl-jsi
+npx pod-install
 ```
 
 ## Usage
