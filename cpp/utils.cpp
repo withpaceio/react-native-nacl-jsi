@@ -10,7 +10,7 @@ namespace react_native_nacl {
 		size_t decoded_len = 0;
 
 		if (sodium_base642bin(bin.data(), bin.size(), str.data(), str.size(), nullptr, &decoded_len, nullptr, sodium_base64_VARIANT_ORIGINAL) != 0) {
-			jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] invalid base64 input");
+			throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] invalid base64 input");
 		}
 
 		bin.resize(decoded_len);

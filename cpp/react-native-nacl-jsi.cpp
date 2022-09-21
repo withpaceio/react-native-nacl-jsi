@@ -15,7 +15,7 @@ using namespace facebook;
 namespace react_native_nacl {
 	void install(jsi::Runtime& jsiRuntime) {
 		if (sodium_init() == -1) {
-			jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] sodium_init() failed");
+			throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] sodium_init() failed");
 		}
 
 		install_aes(jsiRuntime);

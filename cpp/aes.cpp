@@ -29,7 +29,7 @@ namespace react_native_nacl {
 
         std::vector<uint8_t> key = base64ToBin(jsiRuntime, key_string);
         if (key.size() != crypto_aead_aes256gcm_KEYBYTES) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_encrypt wrong key length");
+					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_encrypt wrong key length");
         }
 
         std::vector<uint8_t> nonce(crypto_aead_aes256gcm_NPUBBYTES);
@@ -63,12 +63,12 @@ namespace react_native_nacl {
 
         std::vector<uint8_t> key = base64ToBin(jsiRuntime, key_string);
         if (key.size() != crypto_aead_aes256gcm_KEYBYTES) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt wrong key length");
+					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt wrong key length");
         }
 
         std::vector<uint8_t> nonce = base64ToBin(jsiRuntime, nonce_string);
         if (nonce.size() != crypto_aead_aes256gcm_NPUBBYTES) {
-          jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt wrong nonce length");
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt wrong nonce length");
         }
 
         std::vector<uint8_t> cipher_text = base64ToBin(jsiRuntime, cipher_text_string);

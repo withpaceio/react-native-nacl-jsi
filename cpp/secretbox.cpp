@@ -29,7 +29,7 @@ namespace react_native_nacl {
 
 				std::vector<uint8_t> secret_key = base64ToBin(jsiRuntime, secret_key_string);
 				if (secret_key.size() != crypto_secretbox_KEYBYTES) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_secretbox_easy wrong key length");
+					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_secretbox_easy wrong key length");
 				}
 
 				std::vector<uint8_t> nonce(crypto_secretbox_NONCEBYTES);
@@ -63,7 +63,7 @@ namespace react_native_nacl {
 
 				std::vector<u_int8_t> secret_key = base64ToBin(jsiRuntime, secret_key_string);
 				if (secret_key.size() != crypto_secretbox_KEYBYTES) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_secretbox_open_easy wrong key length");
+					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_secretbox_open_easy wrong key length");
 				}
 
 				std::vector<uint8_t> nonce_cipher_text = base64ToBin(jsiRuntime, nonce_cipher_text_string);

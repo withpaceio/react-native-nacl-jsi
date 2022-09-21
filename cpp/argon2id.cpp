@@ -17,7 +17,7 @@ namespace react_native_nacl {
 
         char hashed_password[crypto_pwhash_STRBYTES];
         if (crypto_pwhash_str(hashed_password, password_string.data(), password_string.size(), iterations, memory_limit)) {
-					jsi::detail::throwJSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash_str out of memory");
+					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash_str out of memory");
         }
 
 				return jsi::String::createFromUtf8(jsiRuntime, hashed_password);
