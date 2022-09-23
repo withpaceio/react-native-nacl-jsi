@@ -14,6 +14,7 @@
     "ios",
     "cpp",
     "react-native-nacl-jsi.podspec",
+    "precompiled.tgz",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
@@ -35,7 +36,11 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "crypto",
+    "libsodium",
+    "sodium",
+    "nacl"
   ],
   "repository": "https://github.com/remyd/react-native-nacl-jsi",
   "author": "Remy Dautriche <hello@withpace.io> (https://github.com/remyd)",
