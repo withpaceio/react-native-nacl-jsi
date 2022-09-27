@@ -1,6 +1,5 @@
 import { NativeModules } from 'react-native';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AesResult, KeyPair } from './types';
 
 const g = global as any;
@@ -9,6 +8,8 @@ const NaClModule = NativeModules.NaclJsi;
 if (NaClModule && typeof NaClModule.install === 'function') {
   NaClModule.install();
 }
+
+export type { AesResult, KeyPair };
 
 const constants = g.getConstants();
 
