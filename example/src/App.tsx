@@ -13,8 +13,10 @@ import {
   aesDecrypt,
   argon2idHash,
   argon2idVerify,
+  argon2idDeriveKey,
   ARGON2ID_OPSLIMIT_SENSITIVE,
   ARGON2ID_MEMLIMIT_INTERACTIVE,
+  getRandomBytes,
 } from 'react-native-nacl-jsi';
 
 export default function App() {
@@ -50,6 +52,15 @@ export default function App() {
   );
   const isVerified = argon2idVerify(hashedPassword, password);
 
+  const salt = getRandomBytes(32);
+  const derivedKey = argon2idDeriveKey(
+    password,
+    salt,
+    32,
+    ARGON2ID_OPSLIMIT_SENSITIVE,
+    ARGON2ID_MEMLIMIT_INTERACTIVE
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -82,6 +93,13 @@ export default function App() {
           <Text>Hash: {hashedPassword}</Text>
           <Text>---</Text>
           <Text>Is verified: {isVerified ? 'true' : 'false'}</Text>
+        </View>
+        <View style={styles.algorithmContainer}>
+          <Text style={styles.algorithmName}>Argon2id key derivation</Text>
+          <Text>Key: {password}</Text>
+          <Text>Salt: {salt}</Text>
+          <Text>---</Text>
+          <Text>{derivedKey}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

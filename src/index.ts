@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AesResult, KeyPair } from './types';
 
 const g = global as any;
@@ -26,6 +27,8 @@ export const ARGON2ID_OPSLIMIT_INTERACTIVE =
 export const ARGON2ID_OPSLIMIT_MODERATE = constants.ARGON2ID_OPSLIMIT_MODERATE;
 export const ARGON2ID_OPSLIMIT_SENSITIVE =
   constants.ARGON2ID_OPSLIMIT_SENSITIVE;
+
+export const ARGON2ID_SALTBYTES = constants.ARGON2ID_SALTBYTES;
 
 export function aesGenerateKey(): string {
   return g.aesGenerateKey();
@@ -85,6 +88,22 @@ export function argon2idHash(
 
 export function argon2idVerify(hash: string, password: string): boolean {
   return g.argon2idVerify(hash, password);
+}
+
+export function argon2idDeriveKey(
+  password: string,
+  salt: string,
+  keyLength: number,
+  iterations: number,
+  memoryLimit: number
+): string {
+  return g.argon2idDeriveKey(
+    password,
+    salt,
+    keyLength,
+    iterations,
+    memoryLimit
+  );
 }
 
 export function getRandomBytes(size: number): string {

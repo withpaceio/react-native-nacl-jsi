@@ -89,6 +89,12 @@ Hash the password using the Argon2id algorithm.
 
 Returns `true` if the hash matches the password.
 
+## Key derivation
+
+### `argon2idDeriveKey(key: string, salt: string, keyLength: number, iterations: number, memoryLimit: number): string`
+
+Derives the key using a salt and the Argon2id algorithm.
+
 ## AES256-GCM
 
 ### `aesGenerateKey(): string`

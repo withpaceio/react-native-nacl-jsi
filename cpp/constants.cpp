@@ -33,6 +33,9 @@ namespace react_native_nacl {
         int ARGON2ID_OPSLIMIT_SENSITIVE = crypto_pwhash_OPSLIMIT_SENSITIVE;
         constants.setProperty(jsiRuntime, "ARGON2ID_OPSLIMIT_SENSITIVE", ARGON2ID_OPSLIMIT_SENSITIVE);
 
+        int ARGON2ID_SALTBYTES = crypto_pwhash_SALTBYTES;
+        constants.setProperty(jsiRuntime, "ARGON2id_SALTBYTES", ARGON2ID_SALTBYTES);
+
         return constants;
       }
     );
