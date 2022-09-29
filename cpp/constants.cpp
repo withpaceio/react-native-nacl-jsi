@@ -36,6 +36,20 @@ namespace react_native_nacl {
         int ARGON2ID_SALTBYTES = crypto_pwhash_SALTBYTES;
         constants.setProperty(jsiRuntime, "ARGON2id_SALTBYTES", ARGON2ID_SALTBYTES);
 
+        int BOX_PUBLIC_KEY_LENGTH = crypto_box_PUBLICKEYBYTES;
+        constants.setProperty(jsiRuntime, "BOX_PUBLIC_KEY_LENGTH", BOX_PUBLIC_KEY_LENGTH);
+        int BOX_SECRET_KEY_LENGTH = crypto_box_SECRETKEYBYTES;
+        constants.setProperty(jsiRuntime, "BOX_SECRET_KEY_LENGTH", BOX_SECRET_KEY_LENGTH);
+        int BOX_NONCE_LENGTH = crypto_box_NONCEBYTES;
+        constants.setProperty(jsiRuntime, "BOX_NONCE_LENGTH", BOX_NONCE_LENGTH);
+        int BOX_SEED_LENGTH = crypto_box_SEEDBYTES;
+        constants.setProperty(jsiRuntime, "BOX_SEED_LENGTH", BOX_SEED_LENGTH);
+
+        int SECRETBOX_KEY_LENGTH = crypto_secretbox_KEYBYTES;
+        constants.setProperty(jsiRuntime, "SECRETBOX_KEY_LENGTH", SECRETBOX_KEY_LENGTH);
+        int SECRETBOX_NONCE_LENGTH = crypto_secretbox_NONCEBYTES;
+        constants.setProperty(jsiRuntime, "SECRETBOX_NONCE_LENGTH", SECRETBOX_NONCE_LENGTH);
+
         return constants;
       }
     );

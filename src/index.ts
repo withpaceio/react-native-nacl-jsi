@@ -31,6 +31,14 @@ export const ARGON2ID_OPSLIMIT_SENSITIVE =
 
 export const ARGON2ID_SALTBYTES = constants.ARGON2ID_SALTBYTES;
 
+export const BOX_PUBLIC_KEY_LENGTH = constants.BOX_PUBLIC_KEY_LENGTH;
+export const BOX_SECRET_KEY_LENGTH = constants.BOX_SECRET_KEY_LENGTH;
+export const BOX_NONCE_LENGTH = constants.BOX_NONCE_LENGTH;
+export const BOX_SEED_LENGTH = constants.BOX_SEED_LENGTH;
+
+export const SECRETBOX_KEY_LENGTH = constants.SECRETBOX_KEY_LENGTH;
+export const SECRETBOX_NONCE_LENGTH = constants.SECRETBOX_NONCE_LENGTH;
+
 export function aesGenerateKey(): string {
   return g.aesGenerateKey();
 }
