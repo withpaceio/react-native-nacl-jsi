@@ -28,4 +28,29 @@ namespace react_native_nacl {
 
 		return base64;
 	}
+
+	std::vector<uint8_t> hexToBin(jsi::Runtime& jsiRuntime, const std::string &str) {
+		std::vector<uint8_t> bin;
+		bin.resize(str.size());
+
+		size_t decoded_length = 0;
+		if (sodium_hex2bin(bin.data(), bin.size(), str.data(), str.size(), nullptr, &decoded_length, nullptr) != 0) {
+			throw jsi::JSError(jsiRuntime, '[react-native-nacl-jsi] invalid hex input');
+		}
+
+		bin.resize(decoded_length);
+		return bin;
+	}
+
+	std::string binToHex(const uint8_t* buffer, size_t length) {
+		std::string hex;
+		hex.resize(length * 2 + 1);
+
+		sodium_bin2hex(hex.data(), hex.size(), buffer, length);
+		if (hex.size() && hex[hex.size() - 1] == '\0') {
+			hex.resize(hex.size() - 1);
+		}
+
+		return hex;
+	}
 }
