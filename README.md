@@ -51,65 +51,124 @@ const decrypted = secretboxOpen(encrypted, key);
 
 ## Public-key authenticated encryption (box)
 
-### `boxGenerateKey(): KeyPair`
+Generates a random key pair for box and returns a `KeyPair`:
 
-Generates a random key pair for box and returns a `KeyPair`.
+```ts
+function boxGenerateKey(): KeyPair;
 
-`type KeyPair = { publicKey: string; secretKey: string }`
+// With KeyPair:
+type KeyPair = {
+  publicKey: string;
+  secretKey: string;
+};
+```
 
-### `boxSeal(message: string, recipientPublicKey: string, senderSecretKey: string): string`
+Encrypts and authenticates message using the recipient's public key and the sender's secret key:
 
-Encrypts and authenticates message using the recipient's public key and the sender's secret key.
+```ts
+function boxSeal(
+  message: string,
+  recipientPublicKey: string,
+  senderSecretKey: string
+): string;
+```
 
-### `boxOpen(encryptedMessage: string, senderPublicKey: string, recipientSecretKey): string`
+Authenticates and decrypts the encrypted message using the sender's public key and the recipient's secret key:
 
-Authenticates and decrypts the encrypted message using the sender's public key and the recipient's secret key.
+```ts
+function boxOpen(
+  encryptedMessage: string,
+  senderPublicKey: string,
+  recipientSecretKey
+): string;
+```
 
 ## Secret-key authenticated encryption (secretbox)
 
-### `secretboxGenerateKey(): string`
+Generates a random key for secretbox:
 
-Generates a random key for secretbox.
+```ts
+function secretboxGenerateKey(): string;
+```
 
-### `secretboxSeal(message: string, secretKey: string): string`
+Encrypts and authenticates message using the key:
 
-Encrypts and authenticates message using the key.
+```ts
+function secretboxSeal(message: string, secretKey: string): string;
+```
 
-### `secretboxOpen(encryptedMessage: string, secretKey: string): string`
+Authenticates and decrypts the encrypted message using the key:
 
-Authenticates and decrypts the encrypted message using the key.
+```ts
+function secretboxOpen(encryptedMessage: string, secretKey: string): string;
+```
 
 ## Password hashing
 
-### `argon2idHash(password: string, iterations: number, memoryLimit: number): string`
+Hash the password using the Argon2id algorithm:
 
-Hash the password using the Argon2id algorithm.
+```ts
+function argon2idHash(
+  password: string,
+  iterations: number,
+  memoryLimit: number
+): string;
+```
 
-### `argon2idVerify(hash: string, password: string): boolean`
+Verifies a hash and returns `true` if the hash matches the password:
 
-Returns `true` if the hash matches the password.
+```ts
+function argon2idVerify(hash: string, password: string): boolean;
+```
 
 ## Key derivation
 
-### `argon2idDeriveKey(key: string, salt: string, keyLength: number, iterations: number, memoryLimit: number): string`
+Derives the key using a salt and the Argon2id algorithm:
 
-Derives the key using a salt and the Argon2id algorithm.
+```ts
+function argon2idDeriveKey(
+  key: string,
+  salt: string,
+  keyLength: number,
+  iterations: number,
+  memoryLimit: number
+): string;
+```
 
 ## AES256-GCM
 
-### `aesGenerateKey(): string`
+Generates a random key to use for AES256-GCM encryption:
 
-Generates a random key to use for AES256-GCM encryption
+```ts
+function aesGenerateKey(): string;
+```
 
-### `aesEncrypt(message: string, key: string): AesResult`
+Encrypts the message using the key and returns a `AesResult`:
 
-Encrypts the message using the key and returns a `AesResult`.
+```ts
+function aesEncrypt(message: string, key: string): AesResult;
 
-`type AesResult = { encrypted: string; iv: string }`
+// With AesResult:
+type AesResult = {
+  encrypted: string;
+  iv: string;
+};
+```
 
-### `aesDecrypt(encryptedMessage: string, key: string, iv: string)`
+Decrypts the encrypted message using the initialisation vector `iv` and the key:
 
-Decrypts the encrypted message using the initialisation vector `iv` and the key.
+```ts
+function aesDecrypt(encryptedMessage: string, key: string, iv: string): string;
+```
+
+## Generates random bytes
+
+```ts
+function getRandomBytes(
+  size: number,
+  encoding: 'base64' | 'hex' = 'base64'
+): string;
+```
 
 ## Contributing
 
