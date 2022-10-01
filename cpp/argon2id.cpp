@@ -52,9 +52,12 @@ namespace react_native_nacl {
 
         std::vector<uint8_t> key(key_length);
         std::vector<uint8_t> salt = base64ToBin(jsiRuntime, salt_string);
+        if (salt.size() != crypto_pwhash_SALTBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] salt length is incorrect");
+        }
 
         if (crypto_pwhash(key.data(), key_length, password_string.data(), password_string.size(), salt.data(), iterations, memory_limit, crypto_pwhash_ALG_ARGON2ID13) != 0) {
-          jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash out of memory");
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash out of memory");
         }
 
         return jsi::String::createFromUtf8(jsiRuntime, binToBase64(key.data(), key.size(), sodium_base64_VARIANT_ORIGINAL));
