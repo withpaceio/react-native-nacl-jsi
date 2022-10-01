@@ -34,7 +34,7 @@ namespace react_native_nacl {
         constants.setProperty(jsiRuntime, "ARGON2ID_OPSLIMIT_SENSITIVE", ARGON2ID_OPSLIMIT_SENSITIVE);
 
         int ARGON2ID_SALTBYTES = crypto_pwhash_SALTBYTES;
-        constants.setProperty(jsiRuntime, "ARGON2id_SALTBYTES", ARGON2ID_SALTBYTES);
+        constants.setProperty(jsiRuntime, "ARGON2ID_SALTBYTES", ARGON2ID_SALTBYTES);
 
         int BOX_PUBLIC_KEY_LENGTH = crypto_box_PUBLICKEYBYTES;
         constants.setProperty(jsiRuntime, "BOX_PUBLIC_KEY_LENGTH", BOX_PUBLIC_KEY_LENGTH);
