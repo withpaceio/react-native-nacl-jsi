@@ -40,6 +40,7 @@ add_library(cpp
   ../cpp/constants.cpp
   ../cpp/random.cpp
   ../cpp/secretbox.cpp
+  ../cpp/sign.cpp
   ../cpp/utils.cpp
   cpp-adapter.cpp
 )

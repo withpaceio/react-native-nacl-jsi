@@ -87,6 +87,22 @@ export function secretboxOpen(cipherText: string, secretKey: string): string {
   return g.secretboxOpen(cipherText, secretKey);
 }
 
+export function signGenerateKey(): KeyPair {
+  return g.signGenerateKey();
+}
+
+export function signDetached(message: string, secretKey: string): string {
+  return g.signDetached(message, secretKey);
+}
+
+export function signVerifyDetached(
+  message: string,
+  publicKey: string,
+  signature: string
+): boolean {
+  return g.signVerifyDetached(message, publicKey, signature);
+}
+
 export function argon2idHash(
   password: string,
   iterations: number,

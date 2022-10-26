@@ -16,7 +16,11 @@ import {
   argon2idDeriveKey,
   ARGON2ID_OPSLIMIT_SENSITIVE,
   ARGON2ID_MEMLIMIT_INTERACTIVE,
+  ARGON2ID_SALTBYTES,
   getRandomBytes,
+  signGenerateKey,
+  signDetached,
+  signVerifyDetached,
 } from 'react-native-nacl-jsi';
 
 export default function App() {
@@ -52,13 +56,22 @@ export default function App() {
   );
   const isVerified = argon2idVerify(hashedPassword, password);
 
-  const salt = getRandomBytes(32);
+  const salt = getRandomBytes(ARGON2ID_SALTBYTES);
   const derivedKey = argon2idDeriveKey(
     password,
     salt,
     32,
     ARGON2ID_OPSLIMIT_SENSITIVE,
     ARGON2ID_MEMLIMIT_INTERACTIVE
+  );
+
+  const signKeyPair = signGenerateKey();
+  const messageToSign = 'sign this message';
+  const signature = signDetached(messageToSign, signKeyPair.secretKey);
+  const isSignatureVerified = signVerifyDetached(
+    messageToSign,
+    signKeyPair.publicKey,
+    signature
   );
 
   return (
@@ -101,6 +114,13 @@ export default function App() {
           <Text>---</Text>
           <Text>{derivedKey}</Text>
         </View>
+        <View style={styles.algorithmContainer}>
+          <Text style={styles.algorithmName}>Signature</Text>
+          <Text>Public key: {signKeyPair.publicKey}</Text>
+          <Text>Secret key: {signKeyPair.secretKey}</Text>
+          <Text>Signature: {signature}</Text>
+          <Text>Is verified: {isSignatureVerified ? 'true' : 'false'}</Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -110,6 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    backgroundColor: '#fff',
   },
   algorithmContainer: {
     width: '100%',
