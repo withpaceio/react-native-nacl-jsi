@@ -103,6 +103,36 @@ Authenticates and decrypts the encrypted message using the key:
 function secretboxOpen(encryptedMessage: string, secretKey: string): string;
 ```
 
+## Signature
+
+Generates a signing key pair:
+
+```ts
+function signGenerateKey(): KeyPair;
+
+// With KeyPair:
+type KeyPair = {
+  publicKey: string;
+  secretKey: string;
+};
+```
+
+Signs a message and returns the signature:
+
+```ts
+function signDetached(messageToSign: string, secretKey: string): string;
+```
+
+Verifies a signature:
+
+```ts
+function signVerifyDetached(
+  message: string,
+  publicKey: string,
+  signature: string
+): boolean;
+```
+
 ## Password hashing
 
 Hash the password using the Argon2id algorithm:
