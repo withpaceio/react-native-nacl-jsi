@@ -42,13 +42,13 @@
     "sodium",
     "nacl"
   ],
-  "repository": "https://github.com/remyd/react-native-nacl-jsi",
-  "author": "Remy Dautriche <hello@withpace.io> (https://github.com/remyd)",
+  "repository": "https://github.com/withpaceio/react-native-nacl-jsi",
+  "author": "PACE <hello@withpace.io> (https://github.com/withpaceio)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/remyd/react-native-nacl-jsi/issues"
+    "url": "https://github.com/withpaceio/react-native-nacl-jsi/issues"
   },
-  "homepage": "https://github.com/remyd/react-native-nacl-jsi#readme",
+  "homepage": "https://github.com/withpaceio/react-native-nacl-jsi#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
