@@ -12,14 +12,14 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.70.1"
+    "react-native": "0.71.6"
   },
   "devDependencies": {
-    "@babel/core": "7.19.1",
-    "@babel/runtime": "7.19.0",
-    "babel-plugin-module-resolver": "4.1.0",
-    "metro-react-native-babel-preset": "0.72.3",
-    "patch-package": "6.4.7",
+    "@babel/core": "7.21.4",
+    "@babel/runtime": "7.21.0",
+    "babel-plugin-module-resolver": "5.0.0",
+    "metro-react-native-babel-preset": "0.76.1",
+    "patch-package": "6.5.1",
     "postinstall-postinstall": "2.1.0"
   }
 }
