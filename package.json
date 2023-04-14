@@ -1,6 +1,6 @@
 {
   "name": "react-native-nacl-jsi",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Sodium for React Native with JSI binding",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
