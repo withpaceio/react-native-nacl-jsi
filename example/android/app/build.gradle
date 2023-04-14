@@ -1,7 +1,7 @@
 apply plugin: "com.android.application"
+apply plugin: "com.facebook.react"
 
 import com.android.build.OutputFile
-import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -81,8 +81,6 @@ import org.apache.tools.ant.taskdefs.condition.Os
 project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
 ]
-
-apply from: "../../node_modules/react-native/react.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
