@@ -20,7 +20,7 @@ cd $source_directory
 platform=`uname`
 
 if [ "$platform" == 'Darwin' ]; then
-  IOS_VERSION_MIN=10.0.0 dist-build/apple-xcframework.sh
+  IOS_VERSION_MIN=12.0.0 dist-build/apple-xcframework.sh
 fi
 
 NDK_PLATFORM=android-21 dist-build/android-armv7-a.sh
@@ -40,7 +40,7 @@ do
 done
 
 if [ "$platform" == 'Darwin' ]; then
-  mv $source_dir/libsodium-apple $build_directory/
+  mv $source_directory/libsodium-apple $build_directory/
 fi
 
 # Create the precompiled archive
