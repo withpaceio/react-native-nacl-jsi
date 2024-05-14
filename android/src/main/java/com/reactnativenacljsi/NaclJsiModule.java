@@ -26,7 +26,7 @@ public class NaclJsiModule extends ReactContextBaseJavaModule {
   @ReactMethod(isBlockingSynchronousMethod = true)
   public boolean install() {
     try {
-      System.loadLibrary("cpp");
+      System.loadLibrary("nacljsi");
 
       ReactApplicationContext context = getReactApplicationContext();
       initialize(context.getJavaScriptContextHolder().get(), context.getFilesDir().getAbsolutePath());
