@@ -13,8 +13,9 @@
     "android",
     "ios",
     "cpp",
+    "libsodium",
+    "!libsodium/build",
     "react-native-nacl-jsi.podspec",
-    "precompiled.tgz",
     "!lib/typescript/example",
     "!android/build",
     "!android/.cxx",
@@ -33,8 +34,8 @@
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn && yarn example pods",
-    "postinstall": "tar -xzf precompiled.tgz",
-    "rebuild": "./build.sh"
+    "postinstall": "tar -zxf libsodium/build.tar.gz --directory ./libsodium",
+    "rebuild": "./libsodium/build.sh"
   },
   "keywords": [
     "react-native",

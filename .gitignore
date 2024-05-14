@@ -67,4 +67,4 @@ android/keystores/debug.keystore
 lib/
 
 # Sodium
-libsodium/
+libsodium/build
