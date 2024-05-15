@@ -11,7 +11,13 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "getRandomBytes"),
       2,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        int size = arguments[0].asNumber();
+        unsigned long size;
+        try {
+          size = arguments[0].asNumber();
+        } catch (jsi::JSINativeException exception) {
+          size = arguments[0].asBigInt(jsiRuntime).asUint64(jsiRuntime);
+        }
+
         std::string encoding = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
 
         std::vector<uint8_t> buffer(size);
