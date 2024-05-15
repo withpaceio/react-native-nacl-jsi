@@ -21,6 +21,7 @@ import {
   signGenerateKey,
   signDetached,
   signVerifyDetached,
+  type AesResult,
 } from 'react-native-nacl-jsi';
 
 export default function App() {
@@ -28,7 +29,7 @@ export default function App() {
   const { encrypted: aesEncryptedMessage, iv } = aesEncrypt(
     'hello aes!',
     aesKey
-  );
+  ) as AesResult;
   const aesDecryptedMessage = aesDecrypt(aesEncryptedMessage, aesKey, iv);
 
   const secretKey = secretboxGenerateKey();
@@ -71,7 +72,7 @@ export default function App() {
   const isSignatureVerified = signVerifyDetached(
     messageToSign,
     signKeyPair.publicKey,
-    signature
+    signature as string
   );
 
   return (
