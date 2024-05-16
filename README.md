@@ -2,10 +2,16 @@
 
 Sodium library for React Native with JSI binding.
 
-Precompiled binaries of [libsodium](https://libsodium.org) will be linked by default.
-Optionally, you can choose to compile libsodium by yourself (run **npm&nbsp;run&nbsp;rebuild** in package directory). Source code will be downloaded and verified before compilation.
+## Features
+
+- ⚡️ High performance integration of the Sodium library written in C++
+- 🔗 Synchronous calls without the bridge, uses [JSI](https://reactnative.dev/docs/the-new-architecture/landing-page#fast-javascriptnative-interfacing)
+- 🧩 Compatible with the new architecture
 
 ## Source compilation
+
+Precompiled binaries of [libsodium](https://libsodium.org) will be linked by default.
+Optionally, you can choose to compile libsodium by yourself (run **npm&nbsp;run&nbsp;rebuild** in package directory). Source code will be downloaded and verified before compilation.
 
 ### MacOS prerequisites
 
@@ -120,7 +126,7 @@ type KeyPair = {
 Signs a message and returns the signature:
 
 ```ts
-function signDetached(messageToSign: string, secretKey: string): string;
+function signDetached(messageToSign: string, secretKey: string): string | null;
 ```
 
 Verifies a signature:
@@ -140,8 +146,8 @@ Hash the password using the Argon2id algorithm:
 ```ts
 function argon2idHash(
   password: string,
-  iterations: number,
-  memoryLimit: number
+  iterations: BigInt,
+  memoryLimit: BigInt
 ): string;
 ```
 
@@ -160,8 +166,8 @@ function argon2idDeriveKey(
   key: string,
   salt: string,
   keyLength: number,
-  iterations: number,
-  memoryLimit: number
+  iterations: BigInt,
+  memoryLimit: BigInt
 ): string;
 ```
 
@@ -176,7 +182,7 @@ function aesGenerateKey(): string;
 Encrypts the message using the key and returns a `AesResult`:
 
 ```ts
-function aesEncrypt(message: string, key: string): AesResult;
+function aesEncrypt(message: string, key: string): AesResult | null;
 
 // With AesResult:
 type AesResult = {
@@ -188,14 +194,18 @@ type AesResult = {
 Decrypts the encrypted message using the initialisation vector `iv` and the key:
 
 ```ts
-function aesDecrypt(encryptedMessage: string, key: string, iv: string): string;
+function aesDecrypt(
+  encryptedMessage: string,
+  key: string,
+  iv: string
+): string | null;
 ```
 
 ## Generates random bytes
 
 ```ts
 function getRandomBytes(
-  size: number,
+  size: number | BigInt,
   encoding: 'base64' | 'hex' = 'base64'
 ): string;
 ```
@@ -204,10 +214,21 @@ function getRandomBytes(
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
+## Author
+
+Rémy Dautriche ([@remydautriche](https://twitter.com/remydautriche))
+
+[PACE](https://withpace.io), a private fitness tracker, implements its cryptography using `react-native-nacl-jsi`.
+
+<div>
+  <a href="https://apps.apple.com/app/pace-privacy/id6444367013">
+    <img height="40" src="/assets/img/appstore.svg">
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=io.withpace.pace">
+    <img height="40" src="/assets/img/googleplay.svg">
+  </a>
+</div>
+
 ## License
 
 MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
