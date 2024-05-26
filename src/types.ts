@@ -4,6 +4,6 @@ export type AesResult = {
 };
 
 export type KeyPair = {
-  publicKey: string;
-  secretKey: string;
+  publicKey: Uint8Array;
+  secretKey: Uint8Array;
 };

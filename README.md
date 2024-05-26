@@ -64,8 +64,8 @@ function boxGenerateKey(): KeyPair;
 
 // With KeyPair:
 type KeyPair = {
-  publicKey: string;
-  secretKey: string;
+  publicKey: Uint8Array;
+  secretKey: Uint8Array;
 };
 ```
 

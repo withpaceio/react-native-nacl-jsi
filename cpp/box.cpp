@@ -1,4 +1,5 @@
 #include "box.h"
+#include "helpers.h"
 #include "sodium.h"
 #include "utils.h"
 
@@ -11,15 +12,15 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "boxGenerateKey"),
       0,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::vector<uint8_t> public_key(crypto_box_PUBLICKEYBYTES);
-        std::vector<uint8_t> secret_key(crypto_box_SECRETKEYBYTES);
-        crypto_box_keypair(public_key.data(), secret_key.data());
+        jsi::ArrayBuffer publicKeyArrayBuffer = getArrayBuffer(jsiRuntime, crypto_box_PUBLICKEYBYTES);
+        jsi::ArrayBuffer secretKeyArrayBuffer = getArrayBuffer(jsiRuntime, crypto_box_SECRETKEYBYTES);
+        crypto_box_keypair(publicKeyArrayBuffer.data(jsiRuntime), secretKeyArrayBuffer.data(jsiRuntime));
 
-        jsi::Object key_pair = jsi::Object(jsiRuntime);
-        key_pair.setProperty(jsiRuntime, "publicKey", binToBase64(public_key.data(), public_key.size(), sodium_base64_VARIANT_ORIGINAL));
-        key_pair.setProperty(jsiRuntime, "secretKey", binToBase64(secret_key.data(), secret_key.size(), sodium_base64_VARIANT_ORIGINAL));
+        jsi::Object keyPair = jsi::Object(jsiRuntime);
+        keyPair.setProperty(jsiRuntime, "publicKey", publicKeyArrayBuffer);
+        keyPair.setProperty(jsiRuntime, "secretKey", secretKeyArrayBuffer);
 
-        return key_pair;
+        return keyPair;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "boxGenerateKey", std::move(boxGenerateKey));

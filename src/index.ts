@@ -58,7 +58,13 @@ export function aesDecrypt(
 }
 
 export function boxGenerateKey(): KeyPair {
-  return g.boxGenerateKey();
+  const keyPair: { publicKey: ArrayBuffer; secretKey: ArrayBuffer } =
+    g.boxGenerateKey();
+
+  return {
+    publicKey: new Uint8Array(keyPair.publicKey),
+    secretKey: new Uint8Array(keyPair.secretKey),
+  };
 }
 
 export function boxSeal(
