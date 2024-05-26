@@ -73,10 +73,10 @@ Encrypts and authenticates message using the recipient's public key and the send
 
 ```ts
 function boxSeal(
-  message: string,
-  recipientPublicKey: string,
-  senderSecretKey: string
-): string;
+  message: Uint8Array,
+  recipientPublicKey: Uint8Array,
+  senderSecretKey: Uint8Array
+): Uint8Array;
 ```
 
 Authenticates and decrypts the encrypted message using the sender's public key and the recipient's secret key:

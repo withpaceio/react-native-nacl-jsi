@@ -68,11 +68,17 @@ export function boxGenerateKey(): KeyPair {
 }
 
 export function boxSeal(
-  message: string,
-  recipientPublicKey: string,
-  senderSecretKey: string
-): string {
-  return g.boxSeal(message, recipientPublicKey, senderSecretKey);
+  message: Uint8Array,
+  recipientPublicKey: Uint8Array,
+  senderSecretKey: Uint8Array
+): Uint8Array {
+  const encrypted = g.boxSeal(
+    message.buffer,
+    recipientPublicKey.buffer,
+    senderSecretKey.buffer
+  );
+
+  return new Uint8Array(encrypted);
 }
 
 export function boxOpen(

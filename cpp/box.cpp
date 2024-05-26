@@ -1,3 +1,5 @@
+#include <optional>
+
 #include "box.h"
 #include "helpers.h"
 #include "sodium.h"
@@ -30,37 +32,49 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "boxSeal"),
       3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-				std::string message_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-				std::string recipient_public_key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-				std::string sender_secret_key_string = arguments[2].asString(jsiRuntime).utf8(jsiRuntime);
+        std::optional<jsi::ArrayBuffer> optMessage = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!optMessage.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal message must be an ArrayBuffer");
+        }
+        auto messageSize = optMessage.value().size(jsiRuntime);
+        auto messageData = optMessage.value().data(jsiRuntime);
 
-				std::vector<uint8_t> recipient_public_key = base64ToBin(jsiRuntime, recipient_public_key_string);
-				if (recipient_public_key.size() != crypto_box_PUBLICKEYBYTES) {
-					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_box_easy wrong public key length");
-				}
+        std::optional<jsi::ArrayBuffer> optPublicKey = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!optPublicKey.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal public key must be an ArrayBuffer");
+        }
+        if (optPublicKey.value().size(jsiRuntime) != crypto_box_PUBLICKEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal wrong public key length");
+        }
+        auto publicKeyData = optPublicKey.value().data(jsiRuntime);
 
-				std::vector<uint8_t> sender_secret_key = base64ToBin(jsiRuntime, sender_secret_key_string);
-				if (sender_secret_key.size() != crypto_box_SECRETKEYBYTES) {
-					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_box_easy wrong secret key length");
-				}
+        std::optional<jsi::ArrayBuffer> optSecretKey = getArrayBuffer(jsiRuntime, arguments[2]);
+        if (!optSecretKey.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal secret key must be an ArrayBuffer");
+        }
+        if (optSecretKey.value().size(jsiRuntime) != crypto_box_SECRETKEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal wrong secret key length");
+        }
+        auto secretKeyData = optPublicKey.value().data(jsiRuntime);
 
         std::vector<uint8_t> nonce(crypto_box_NONCEBYTES);
         randombytes_buf(nonce.data(), crypto_box_NONCEBYTES);
 
 				std::vector<uint8_t> cipher_text;
-				unsigned long long cipher_text_length = crypto_box_MACBYTES + message_string.size();
+				auto cipher_text_length = crypto_box_MACBYTES + messageSize;
 				cipher_text.resize(cipher_text_length);
 
-        if (crypto_box_easy(cipher_text.data(), (uint8_t *)message_string.data(), message_string.size(), nonce.data(), recipient_public_key.data(), sender_secret_key.data()) != 0) {
+        if (crypto_box_easy(cipher_text.data(), messageData, messageSize, nonce.data(), publicKeyData, secretKeyData) != 0) {
 					return jsi::Value(nullptr);
         }
-
-				std::vector<uint8_t> nonce_cipher_text;
-				nonce_cipher_text.resize(nonce.size() + cipher_text.size());
-				std::move(nonce.begin(), nonce.end(), nonce_cipher_text.begin());
-				std::move(cipher_text.begin(), cipher_text.end(), nonce_cipher_text.begin() + crypto_box_NONCEBYTES);
-
-				return jsi::String::createFromUtf8(jsiRuntime, binToBase64(nonce_cipher_text.data(), nonce_cipher_text.size(), sodium_base64_VARIANT_ORIGINAL));
+        
+        jsi::ArrayBuffer nonceCipherText = getArrayBuffer(jsiRuntime, nonce.size() + cipher_text.size());
+        auto data = nonceCipherText.data(jsiRuntime);
+        
+        std::move(nonce.begin(), nonce.end(), data);
+        std::move(cipher_text.begin(), cipher_text.end(), &(data[crypto_box_NONCEBYTES]));
+        
+        return nonceCipherText;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "boxSeal", std::move(boxSeal));
