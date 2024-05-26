@@ -204,10 +204,7 @@ function aesDecrypt(
 ## Generates random bytes
 
 ```ts
-function getRandomBytes(
-  size: number | BigInt,
-  encoding: 'base64' | 'hex' = 'base64'
-): string;
+function getRandomBytes(size: number | BigInt): Uint8Array;
 ```
 
 ## Contributing

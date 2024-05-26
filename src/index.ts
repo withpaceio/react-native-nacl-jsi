@@ -136,9 +136,7 @@ export function argon2idDeriveKey(
   );
 }
 
-export function getRandomBytes(
-  size: number | BigInt,
-  encoding: 'base64' | 'hex' = 'base64'
-): string {
-  return g.getRandomBytes(size, encoding);
+export function getRandomBytes(size: number | BigInt): Uint8Array {
+  const randomBytes: ArrayBuffer = g.getRandomBytes(size);
+  return new Uint8Array(randomBytes);
 }
