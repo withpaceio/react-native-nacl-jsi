@@ -1,6 +1,6 @@
+#include "helpers.h"
 #include "random.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 
@@ -20,9 +20,7 @@ namespace react_native_nacl {
           throw new jsi::JSError(jsiRuntime, "Size must be a number or a BigInt");
         }
 
-        jsi::Function arrayBufferFunction = jsiRuntime.global().getPropertyAsFunction(jsiRuntime, "ArrayBuffer");
-        jsi::Object object = arrayBufferFunction.callAsConstructor(jsiRuntime, (double)size).getObject(jsiRuntime);
-        jsi::ArrayBuffer arrayBuffer = object.getArrayBuffer(jsiRuntime);
+        jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, (double)size);
         uint8_t* data = arrayBuffer.data(jsiRuntime);
         randombytes_buf(data, size);
 

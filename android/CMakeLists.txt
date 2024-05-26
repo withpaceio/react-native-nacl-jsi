@@ -34,6 +34,7 @@ add_library(nacljsi
   ../cpp/argon2id.cpp
   ../cpp/box.cpp
   ../cpp/constants.cpp
+  ../cpp/helpers.cpp
   ../cpp/random.cpp
   ../cpp/secretbox.cpp
   ../cpp/sign.cpp
