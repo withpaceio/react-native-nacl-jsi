@@ -1,3 +1,4 @@
+#include "helpers.h"
 #include "sign.h"
 #include "sodium.h"
 #include "utils.h"
@@ -11,15 +12,15 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "signGenerateKey"),
       0,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::vector<uint8_t> public_key(crypto_sign_PUBLICKEYBYTES);
-        std::vector<uint8_t> secret_key(crypto_sign_SECRETKEYBYTES);
-        crypto_sign_keypair(public_key.data(), secret_key.data());
+        jsi::ArrayBuffer publicKey = getArrayBuffer(jsiRuntime, crypto_sign_PUBLICKEYBYTES);
+        jsi::ArrayBuffer secretKey = getArrayBuffer(jsiRuntime, crypto_sign_SECRETKEYBYTES);
+        crypto_sign_keypair(publicKey.data(jsiRuntime), secretKey.data(jsiRuntime));
 
-        jsi::Object keypair = jsi::Object(jsiRuntime);
-        keypair.setProperty(jsiRuntime, "publicKey", binToBase64(public_key.data(), public_key.size(), sodium_base64_VARIANT_ORIGINAL));
-        keypair.setProperty(jsiRuntime, "secretKey", binToBase64(secret_key.data(), secret_key.size(), sodium_base64_VARIANT_ORIGINAL));
+        jsi::Object keyPair = jsi::Object(jsiRuntime);
+        keyPair.setProperty(jsiRuntime, "publicKey", publicKey);
+        keyPair.setProperty(jsiRuntime, "secretKey", secretKey);
 
-        return keypair;
+        return keyPair;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "signGenerateKey", std::move(signGenerateKey));
