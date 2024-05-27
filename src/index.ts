@@ -108,8 +108,17 @@ export function secretboxGenerateKey(): Uint8Array {
   return new Uint8Array(secretKey);
 }
 
-export function secretboxSeal(message: string, secretKey: string): string {
-  return g.secretboxSeal(message, secretKey);
+export function secretboxSeal(
+  message: Uint8Array,
+  secretKey: Uint8Array
+): Uint8Array | null {
+  const encrypted = g.secretboxSeal(message.buffer, secretKey.buffer);
+
+  if (encrypted === null) {
+    return null;
+  }
+
+  return new Uint8Array(encrypted);
 }
 
 export function secretboxOpen(cipherText: string, secretKey: string): string {
