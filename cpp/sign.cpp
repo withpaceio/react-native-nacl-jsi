@@ -65,18 +65,29 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "signVerifyDetached"),
       3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::string message_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string public_key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string signature_string = arguments[2].asString(jsiRuntime).utf8(jsiRuntime);
-
-        std::vector<uint8_t> public_key = base64ToBin(jsiRuntime, public_key_string);
-        if (public_key.size() != crypto_sign_PUBLICKEYBYTES) {
-          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_sign_verify_detached wrong public key length");
+        std::optional<jsi::ArrayBuffer> messageOpt = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!messageOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] signVerifyDetached message must be an ArrayBuffer");
         }
+        auto messageData = messageOpt.value().data(jsiRuntime);
+        auto messageSize = messageOpt.value().size(jsiRuntime);
 
-        std::vector<uint8_t> signature = base64ToBin(jsiRuntime, signature_string);
+        std::optional<jsi::ArrayBuffer> publicKeyOpt = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!publicKeyOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] signVerifyDetached publicKey must be an ArrayBuffer");
+        }
+        if (publicKeyOpt.value().size(jsiRuntime) != crypto_sign_PUBLICKEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] signVerifyDetached wrong public key length");
+        }
+        auto publicKeyData = publicKeyOpt.value().data(jsiRuntime);
 
-        bool result = crypto_sign_verify_detached(signature.data(), (uint8_t *)message_string.data(), message_string.size(), public_key.data()) == 0;
+        std::optional<jsi::ArrayBuffer> signatureOpt = getArrayBuffer(jsiRuntime, arguments[2]);
+        if (!signatureOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] signVerifyDetached signature must be an ArrayBuffer");
+        }
+        auto signatureData = signatureOpt.value().data(jsiRuntime);
+
+        bool result = crypto_sign_verify_detached(signatureData, messageData, messageSize, publicKeyData) == 0;
         return jsi::Value(result);
       }
     );
