@@ -1,3 +1,4 @@
+#include "helpers.h"
 #include "secretbox.h"
 #include "sodium.h"
 #include "utils.h"
@@ -11,10 +12,10 @@ namespace react_native_nacl {
 			jsi::PropNameID::forAscii(jsiRuntime, "secretboxGenerateKey"),
 			0,
 			[](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-				std::vector<uint8_t> secret_key(crypto_secretbox_KEYBYTES);
-				crypto_secretbox_keygen(secret_key.data());
+        jsi::ArrayBuffer secretKey = getArrayBuffer(jsiRuntime, crypto_secretbox_KEYBYTES);
+				crypto_secretbox_keygen(secretKey.data(jsiRuntime));
 
-				return jsi::String::createFromUtf8(jsiRuntime, binToBase64(secret_key.data(), secret_key.size(), sodium_base64_VARIANT_ORIGINAL));
+        return secretKey;
 			}
 		);
 		jsiRuntime.global().setProperty(jsiRuntime, "secretboxGenerateKey", std::move(secretboxGenerateKey));

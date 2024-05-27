@@ -103,8 +103,9 @@ export function boxOpen(
   return new Uint8Array(decrypted);
 }
 
-export function secretboxGenerateKey(): string {
-  return g.secretboxGenerateKey();
+export function secretboxGenerateKey(): Uint8Array {
+  const secretKey = g.secretboxGenerateKey();
+  return new Uint8Array(secretKey);
 }
 
 export function secretboxSeal(message: string, secretKey: string): string {
