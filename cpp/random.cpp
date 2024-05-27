@@ -17,7 +17,7 @@ namespace react_native_nacl {
         } else if (arguments[0].isBigInt()) {
           size = arguments[0].asBigInt(jsiRuntime).asInt64(jsiRuntime);
         } else {
-          throw new jsi::JSError(jsiRuntime, "Size must be a number or a BigInt");
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] getRandomBytes size must be a number or a BigInt");
         }
 
         jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, (double)size);
