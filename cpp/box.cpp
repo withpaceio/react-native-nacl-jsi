@@ -3,7 +3,6 @@
 #include "box.h"
 #include "helpers.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 
@@ -55,25 +54,25 @@ namespace react_native_nacl {
         if (optSecretKey.value().size(jsiRuntime) != crypto_box_SECRETKEYBYTES) {
           throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal wrong secret key length");
         }
-        auto secretKeyData = optPublicKey.value().data(jsiRuntime);
+        auto secretKeyData = optSecretKey.value().data(jsiRuntime);
 
         std::vector<uint8_t> nonce(crypto_box_NONCEBYTES);
         randombytes_buf(nonce.data(), crypto_box_NONCEBYTES);
 
-				std::vector<uint8_t> cipher_text;
-				auto cipher_text_length = crypto_box_MACBYTES + messageSize;
-				cipher_text.resize(cipher_text_length);
+				std::vector<uint8_t> cipherText;
+				auto cipherTextLength = crypto_box_MACBYTES + messageSize;
+				cipherText.resize(cipherTextLength);
 
-        if (crypto_box_easy(cipher_text.data(), messageData, messageSize, nonce.data(), publicKeyData, secretKeyData) != 0) {
+        if (crypto_box_easy(cipherText.data(), messageData, messageSize, nonce.data(), publicKeyData, secretKeyData) != 0) {
 					return jsi::Value(nullptr);
         }
-        
-        jsi::ArrayBuffer nonceCipherText = getArrayBuffer(jsiRuntime, nonce.size() + cipher_text.size());
+
+        jsi::ArrayBuffer nonceCipherText = getArrayBuffer(jsiRuntime, nonce.size() + cipherText.size());
         auto data = nonceCipherText.data(jsiRuntime);
-        
+
         std::move(nonce.begin(), nonce.end(), data);
-        std::move(cipher_text.begin(), cipher_text.end(), &(data[crypto_box_NONCEBYTES]));
-        
+        std::move(cipherText.begin(), cipherText.end(), &(data[crypto_box_NONCEBYTES]));
+
         return nonceCipherText;
       }
     );
@@ -84,32 +83,39 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "boxOpen"),
       3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::string nonce_cipher_text_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string sender_public_key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string recipient_public_key_string = arguments[2].asString(jsiRuntime).utf8(jsiRuntime);
-
-        std::vector<uint8_t> sender_public_key = base64ToBin(jsiRuntime, sender_public_key_string);
-        if (sender_public_key.size() != crypto_box_PUBLICKEYBYTES) {
-					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_box_easy_open wrong public key length");
+        std::optional<jsi::ArrayBuffer> nonceCipherTextOpt = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!nonceCipherTextOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxOpen encryptedMessage must be an Uint8Array");
         }
+        auto nonceCipherTextData = nonceCipherTextOpt.value().data(jsiRuntime);
+        auto nonceCipherTextSize = nonceCipherTextOpt.value().size(jsiRuntime);
 
-        std::vector<uint8_t> recipient_secret_key = base64ToBin(jsiRuntime, recipient_public_key_string);
-        if (recipient_secret_key.size() != crypto_box_SECRETKEYBYTES) {
-					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_box_easy_open wrong secret key length");
+        std::optional<jsi::ArrayBuffer> publicKeyOpt = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!publicKeyOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxOpen publicKey must be an Uint8Array");
         }
+        if (publicKeyOpt.value().size(jsiRuntime) != crypto_box_PUBLICKEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxOpen wrong public key length");
+        }
+        auto publicKeyData = publicKeyOpt.value().data(jsiRuntime);
 
-				std::vector<uint8_t> nonce_cipher_text = base64ToBin(jsiRuntime, nonce_cipher_text_string);
-				std::vector<uint8_t> nonce(crypto_box_NONCEBYTES);
-				std::move(nonce_cipher_text.begin(), nonce_cipher_text.begin() + crypto_box_NONCEBYTES, nonce.begin());
-				std::vector<uint8_t> cipher_text(nonce_cipher_text.size() - nonce.size());
-				std::move(nonce_cipher_text.begin() + crypto_box_NONCEBYTES, nonce_cipher_text.end(), cipher_text.begin());
+        std::optional<jsi::ArrayBuffer> secretKeyOpt = getArrayBuffer(jsiRuntime, arguments[2]);
+        if (!secretKeyOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxOpen secretKey must be an Uint8Array");
+        }
+        if (secretKeyOpt.value().size(jsiRuntime) != crypto_box_SECRETKEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxOpen wrong secret key length");
+        }
+        auto secretKeyData = secretKeyOpt.value().data(jsiRuntime);
 
-				std::vector<uint8_t> message(cipher_text.size());
-        if (crypto_box_open_easy(message.data(), cipher_text.data(), cipher_text.size(), nonce.data(), sender_public_key.data(), recipient_secret_key.data()) != 0) {
+        jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, nonceCipherTextSize - crypto_box_NONCEBYTES - crypto_box_MACBYTES);
+        uint8_t* message = arrayBuffer.data(jsiRuntime);
+
+        if (crypto_box_open_easy(message, &nonceCipherTextData[crypto_box_NONCEBYTES], nonceCipherTextSize - crypto_box_NONCEBYTES, nonceCipherTextData, publicKeyData, secretKeyData) != 0) {
           return jsi::Value(nullptr);
         }
 
-				return jsi::String::createFromUtf8(jsiRuntime, message.data(), message.size());
+        return arrayBuffer;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "boxOpen", std::move(boxOpen));

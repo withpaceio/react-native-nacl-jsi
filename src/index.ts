@@ -71,22 +71,36 @@ export function boxSeal(
   message: Uint8Array,
   recipientPublicKey: Uint8Array,
   senderSecretKey: Uint8Array
-): Uint8Array {
+): Uint8Array | null {
   const encrypted = g.boxSeal(
     message.buffer,
     recipientPublicKey.buffer,
     senderSecretKey.buffer
   );
 
+  if (encrypted === null) {
+    return null;
+  }
+
   return new Uint8Array(encrypted);
 }
 
 export function boxOpen(
-  encryptedMessage: string,
-  senderPublicKey: string,
-  recipientSecretKey: string
-): string {
-  return g.boxOpen(encryptedMessage, senderPublicKey, recipientSecretKey);
+  encryptedMessage: Uint8Array,
+  senderPublicKey: Uint8Array,
+  recipientSecretKey: Uint8Array
+): Uint8Array | null {
+  const decrypted = g.boxOpen(
+    encryptedMessage.buffer,
+    senderPublicKey.buffer,
+    recipientSecretKey.buffer
+  );
+
+  if (decrypted === null) {
+    return null;
+  }
+
+  return new Uint8Array(decrypted);
 }
 
 export function secretboxGenerateKey(): string {
