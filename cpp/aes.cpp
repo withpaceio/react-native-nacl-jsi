@@ -1,4 +1,5 @@
 #include "aes.h"
+#include "helpers.h"
 #include "sodium.h"
 #include "utils.h"
 
@@ -11,10 +12,10 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "aesGenerateKey"),
       0,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::vector<uint8_t> key(crypto_aead_aes256gcm_KEYBYTES);
-        crypto_aead_aes256gcm_keygen(key.data());
+        jsi::ArrayBuffer key = getArrayBuffer(jsiRuntime, crypto_aead_aes256gcm_KEYBYTES);
+        crypto_aead_aes256gcm_keygen(key.data(jsiRuntime));
 
-				return jsi::String::createFromUtf8(jsiRuntime, binToBase64(key.data(), key.size(), sodium_base64_VARIANT_ORIGINAL));
+        return key;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "aesGenerateKey", std::move(aesGenerateKey));
