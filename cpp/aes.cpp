@@ -1,3 +1,5 @@
+#include <optional>
+
 #include "aes.h"
 #include "helpers.h"
 #include "sodium.h"
@@ -25,30 +27,39 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "aesEncrypt"),
       2,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-				std::string message_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-				std::string key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-
-        std::vector<uint8_t> key = base64ToBin(jsiRuntime, key_string);
-        if (key.size() != crypto_aead_aes256gcm_KEYBYTES) {
-					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_encrypt wrong key length");
+        std::optional<jsi::ArrayBuffer> messageOpt = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!messageOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesEncrypt message must be an ArrayBuffer");
         }
+        auto messageSize = messageOpt.value().size(jsiRuntime);
+        auto messageData = messageOpt.value().data(jsiRuntime);
+        
+        std::optional<jsi::ArrayBuffer> keyOpt = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!keyOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesEncrypt key must be an ArrayBuffer");
+        }
+        if (keyOpt.value().size(jsiRuntime) != crypto_aead_aes256gcm_KEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesEncrypt wrong key length");
+        }
+        auto keyData = keyOpt.value().data(jsiRuntime);
+        
+        jsi::ArrayBuffer nonceArrayBuffer = getArrayBuffer(jsiRuntime, crypto_aead_aes256gcm_NPUBBYTES);
+        auto nonceData = nonceArrayBuffer.data(jsiRuntime);
+        randombytes_buf(nonceData, crypto_aead_aes256gcm_NPUBBYTES);
+        
+        jsi::ArrayBuffer cipherTextArrayBuffer = getArrayBuffer(jsiRuntime, messageSize + crypto_aead_aes256gcm_ABYTES);
+        auto cipherTextData = cipherTextArrayBuffer.data(jsiRuntime);
+        unsigned long long cipherTextSize = cipherTextArrayBuffer.size(jsiRuntime);
 
-        std::vector<uint8_t> nonce(crypto_aead_aes256gcm_NPUBBYTES);
-        randombytes_buf(nonce.data(), crypto_aead_aes256gcm_NPUBBYTES);
-
-        std::vector<uint8_t> cipher_text;
-        unsigned long long cipher_text_length = crypto_aead_aes256gcm_ABYTES + message_string.size();
-        cipher_text.resize(cipher_text_length);
-
-        if (crypto_aead_aes256gcm_encrypt(cipher_text.data(), &cipher_text_length, (uint8_t *)message_string.data(), message_string.size(), NULL, 0, NULL, nonce.data(), key.data()) != 0) {
+        if (crypto_aead_aes256gcm_encrypt(cipherTextData, &cipherTextSize, messageData, messageSize, NULL, 0, NULL, nonceData, keyData) != 0) {
           jsi::Value(nullptr);
         }
 
-        jsi::Object aes_result = jsi::Object(jsiRuntime);
-        aes_result.setProperty(jsiRuntime, "encrypted", binToBase64(cipher_text.data(), cipher_text.size(), sodium_base64_VARIANT_ORIGINAL));
-        aes_result.setProperty(jsiRuntime, "iv", binToBase64(nonce.data(), nonce.size(), sodium_base64_VARIANT_ORIGINAL));
+        jsi::Object aesResult = jsi::Object(jsiRuntime);
+        aesResult.setProperty(jsiRuntime, "encrypted", cipherTextArrayBuffer);
+        aesResult.setProperty(jsiRuntime, "iv", nonceArrayBuffer);
 
-        return aes_result;
+        return aesResult;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "aesEncrypt", std::move(aesEncrypt));
