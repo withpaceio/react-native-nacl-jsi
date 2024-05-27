@@ -55,25 +55,17 @@ namespace react_native_nacl {
           throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal wrong secret key length");
         }
         auto secretKeyData = optSecretKey.value().data(jsiRuntime);
+        
+        jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, messageSize + crypto_box_NONCEBYTES + crypto_box_MACBYTES);
+        uint8_t* nonceCipherText = arrayBuffer.data(jsiRuntime);
 
-        std::vector<uint8_t> nonce(crypto_box_NONCEBYTES);
-        randombytes_buf(nonce.data(), crypto_box_NONCEBYTES);
+        randombytes_buf(nonceCipherText, crypto_box_NONCEBYTES);
 
-				std::vector<uint8_t> cipherText;
-				auto cipherTextLength = crypto_box_MACBYTES + messageSize;
-				cipherText.resize(cipherTextLength);
-
-        if (crypto_box_easy(cipherText.data(), messageData, messageSize, nonce.data(), publicKeyData, secretKeyData) != 0) {
+        if (crypto_box_easy(&nonceCipherText[crypto_box_NONCEBYTES], messageData, messageSize, nonceCipherText, publicKeyData, secretKeyData) != 0) {
 					return jsi::Value(nullptr);
         }
 
-        jsi::ArrayBuffer nonceCipherText = getArrayBuffer(jsiRuntime, nonce.size() + cipherText.size());
-        auto data = nonceCipherText.data(jsiRuntime);
-
-        std::move(nonce.begin(), nonce.end(), data);
-        std::move(cipherText.begin(), cipherText.end(), &(data[crypto_box_NONCEBYTES]));
-
-        return nonceCipherText;
+        return arrayBuffer;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "boxSeal", std::move(boxSeal));
