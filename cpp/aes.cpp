@@ -69,31 +69,41 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "aesDecrypt"),
       3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::string cipher_text_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string key_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string nonce_string = arguments[2].asString(jsiRuntime).utf8(jsiRuntime);
-
-        std::vector<uint8_t> key = base64ToBin(jsiRuntime, key_string);
-        if (key.size() != crypto_aead_aes256gcm_KEYBYTES) {
-					throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt wrong key length");
+        std::optional<jsi::ArrayBuffer> cipherTextOpt = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!cipherTextOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesDecrypt cipherText must be an ArrayBuffer");
         }
-
-        std::vector<uint8_t> nonce = base64ToBin(jsiRuntime, nonce_string);
-        if (nonce.size() != crypto_aead_aes256gcm_NPUBBYTES) {
-          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_aes256gcm_decrypt wrong nonce length");
-        }
-
-        std::vector<uint8_t> cipher_text = base64ToBin(jsiRuntime, cipher_text_string);
-        if (cipher_text.size() < crypto_aead_aes256gcm_ABYTES) {
+        auto cipherTextData = cipherTextOpt.value().data(jsiRuntime);
+        auto cipherTextSize = cipherTextOpt.value().size(jsiRuntime);
+        if (cipherTextSize < crypto_aead_aes256gcm_ABYTES) {
           return jsi::Value(nullptr);
         }
 
-        std::vector<uint8_t> message(cipher_text.size());
-        if (crypto_aead_aes256gcm_decrypt(message.data(), NULL, NULL, cipher_text.data(), cipher_text.size(), NULL, 0, nonce.data(), key.data()) != 0) {
+        std::optional<jsi::ArrayBuffer> keyOpt = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!keyOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesDecrypt key must be an ArrayBuffer");
+        }
+        if (keyOpt.value().size(jsiRuntime) != crypto_aead_aes256gcm_KEYBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesDecrypt wrong key length");
+        }
+        auto keyData = keyOpt.value().data(jsiRuntime);
+
+        std::optional<jsi::ArrayBuffer> ivOpt = getArrayBuffer(jsiRuntime, arguments[2]);
+        if (!ivOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesDecrypt iv must be an ArrayBuffer");
+        }
+        if (ivOpt.value().size(jsiRuntime) != crypto_aead_aes256gcm_NPUBBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesDecrypt wrong iv length");
+        }
+        auto ivData = ivOpt.value().data(jsiRuntime);
+
+        jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, cipherTextSize - crypto_aead_aes256gcm_ABYTES);
+
+        if (crypto_aead_aes256gcm_decrypt(arrayBuffer.data(jsiRuntime), NULL, NULL, cipherTextData, cipherTextSize, NULL, 0, ivData, keyData) != 0) {
           return jsi::Value(nullptr);
         }
 
-				return jsi::String::createFromUtf8(jsiRuntime, message.data(), message.size());
+        return arrayBuffer;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "aesDecrypt", std::move(aesDecrypt));
