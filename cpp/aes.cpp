@@ -3,7 +3,6 @@
 #include "aes.h"
 #include "helpers.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 

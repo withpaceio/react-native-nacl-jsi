@@ -3,7 +3,6 @@
 #include "helpers.h"
 #include "secretbox.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 

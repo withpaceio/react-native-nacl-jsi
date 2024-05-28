@@ -3,7 +3,6 @@
 #include "argon2id.h"
 #include "helpers.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 

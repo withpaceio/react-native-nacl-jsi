@@ -3,7 +3,6 @@
 #include "helpers.h"
 #include "sign.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 

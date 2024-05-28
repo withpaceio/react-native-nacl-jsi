@@ -1,5 +1,4 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -13,5 +12,3 @@ namespace react_native_nacl {
 	std::vector<uint8_t> hexToBin(facebook::jsi::Runtime& jsiRuntime, const std::string &str);
 	std::string binToHex(const uint8_t* buffer, size_t length);
 }
-
-#endif
