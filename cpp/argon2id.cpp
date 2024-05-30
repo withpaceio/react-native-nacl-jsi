@@ -27,7 +27,7 @@ namespace react_native_nacl {
         uint8_t* hashedPassword = arrayBuffer.data(jsiRuntime);
 
         if (crypto_pwhash_str((char *)hashedPassword, (const char* const)passwordData, passwordSize, iterations, memoryLimit) != 0) {
-          return jsi::Value(nullptr);
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idHash failed to compute hash");
         }
 
         return jsi::String::createFromUtf8(jsiRuntime, (char*)hashedPassword);

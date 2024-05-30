@@ -50,9 +50,7 @@ namespace react_native_nacl {
         jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, crypto_sign_BYTES);
         uint8_t* signature = arrayBuffer.data(jsiRuntime);
 
-        if (crypto_sign_detached(signature, NULL, messageData, messageSize, secretKeyData) != 0) {
-          return jsi::Value(nullptr);
-        }
+        crypto_sign_detached(signature, NULL, messageData, messageSize, secretKeyData);
 
         return arrayBuffer;
       }

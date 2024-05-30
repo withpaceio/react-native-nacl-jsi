@@ -62,7 +62,7 @@ namespace react_native_nacl {
         randombytes_buf(nonceCipherText, crypto_box_NONCEBYTES);
 
         if (crypto_box_easy(&nonceCipherText[crypto_box_NONCEBYTES], messageData, messageSize, nonceCipherText, publicKeyData, secretKeyData) != 0) {
-					return jsi::Value(nullptr);
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxSeal encryption failed");
         }
 
         return arrayBuffer;
@@ -104,7 +104,7 @@ namespace react_native_nacl {
         uint8_t* message = arrayBuffer.data(jsiRuntime);
 
         if (crypto_box_open_easy(message, &nonceCipherTextData[crypto_box_NONCEBYTES], nonceCipherTextSize - crypto_box_NONCEBYTES, nonceCipherTextData, publicKeyData, secretKeyData) != 0) {
-          return jsi::Value(nullptr);
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] boxOpen verification failed");
         }
 
         return arrayBuffer;

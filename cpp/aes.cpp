@@ -50,9 +50,8 @@ namespace react_native_nacl {
         auto cipherTextData = cipherTextArrayBuffer.data(jsiRuntime);
         unsigned long long cipherTextSize = cipherTextArrayBuffer.size(jsiRuntime);
 
-        if (crypto_aead_aes256gcm_encrypt(cipherTextData, &cipherTextSize, messageData, messageSize, NULL, 0, NULL, nonceData, keyData) != 0) {
-          jsi::Value(nullptr);
-        }
+        // always returns 0
+        crypto_aead_aes256gcm_encrypt(cipherTextData, &cipherTextSize, messageData, messageSize, NULL, 0, NULL, nonceData, keyData);
 
         jsi::Object aesResult = jsi::Object(jsiRuntime);
         aesResult.setProperty(jsiRuntime, "encrypted", cipherTextArrayBuffer);
@@ -99,7 +98,7 @@ namespace react_native_nacl {
         jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, cipherTextSize - crypto_aead_aes256gcm_ABYTES);
 
         if (crypto_aead_aes256gcm_decrypt(arrayBuffer.data(jsiRuntime), NULL, NULL, cipherTextData, cipherTextSize, NULL, 0, ivData, keyData) != 0) {
-          return jsi::Value(nullptr);
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] aesDecrypt verification failed");
         }
 
         return arrayBuffer;

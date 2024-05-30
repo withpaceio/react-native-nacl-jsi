@@ -48,7 +48,7 @@ namespace react_native_nacl {
         randombytes_buf(nonceCipherText, crypto_secretbox_NONCEBYTES);
 
 				if (crypto_secretbox_easy(&nonceCipherText[crypto_secretbox_NONCEBYTES], messageData, messageSize, nonceCipherText, secretKeyData) != 0) {
-					return jsi::Value(nullptr);
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] secretboxSeal encryption failed");
 				}
 
         return arrayBuffer;
@@ -70,10 +70,10 @@ namespace react_native_nacl {
 
         std::optional<jsi::ArrayBuffer> secretKeyOpt = getArrayBuffer(jsiRuntime, arguments[1]);
         if (!secretKeyOpt.has_value()) {
-          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] secretboxSeal secretKey must be an ArrayBuffer");
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] secretboxOpen secretKey must be an ArrayBuffer");
         }
         if (secretKeyOpt.value().size(jsiRuntime) != crypto_secretbox_KEYBYTES) {
-          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] secretboxSeal wrong key length");
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] secretboxOpen wrong key length");
         }
         auto secretKeyData = secretKeyOpt.value().data(jsiRuntime);
 
@@ -81,7 +81,7 @@ namespace react_native_nacl {
         uint8_t* message = arrayBuffer.data(jsiRuntime);
 
 				if (crypto_secretbox_open_easy(message, &nonceCipherTextData[crypto_secretbox_NONCEBYTES], nonceCipherTextSize - crypto_secretbox_NONCEBYTES, nonceCipherTextData, secretKeyData) != 0) {
-					return jsi::Value(nullptr);
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] secretboxOpen verification failed");
 				}
 
         return arrayBuffer;
