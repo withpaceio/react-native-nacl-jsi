@@ -87,6 +87,13 @@ export function encodeUtf8(buffer: Uint8Array): string {
 }
 
 /**
+ * Decodes a UTF-8 string into an `Uint8Array`
+ */
+export function decodeUtf8(input: string): Uint8Array {
+  return new TextEncoder().encode(input);
+}
+
+/**
  * Generates a key to be used with aesEncrypt and aesDecrypt
  */
 export function aesGenerateKey(): Uint8Array {
