@@ -11,8 +11,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2FD82F816DCFC442141A3DA5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D57A37A7E6691FD6C81AB001 /* PrivacyInfo.xcprivacy */; };
+		7DE08AC59F8ADEDD077A9BE4 /* libPods-NaclJsiExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1584C0EABBD77B85B3206DB8 /* libPods-NaclJsiExample.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		B5444BFD4E0E87F23A7D6428 /* libPods-NaclJsiExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 659F10F9A12CB16ED7BC6410 /* libPods-NaclJsiExample.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,10 +22,10 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NaclJsiExample/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NaclJsiExample/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NaclJsiExample/main.m; sourceTree = "<group>"; };
-		3B12B62F0328DD5DC984F453 /* Pods-NaclJsiExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NaclJsiExample.debug.xcconfig"; path = "Target Support Files/Pods-NaclJsiExample/Pods-NaclJsiExample.debug.xcconfig"; sourceTree = "<group>"; };
-		659F10F9A12CB16ED7BC6410 /* libPods-NaclJsiExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NaclJsiExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1584C0EABBD77B85B3206DB8 /* libPods-NaclJsiExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NaclJsiExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NaclJsiExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		903C863C0D3E7EC2818993E7 /* Pods-NaclJsiExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NaclJsiExample.release.xcconfig"; path = "Target Support Files/Pods-NaclJsiExample/Pods-NaclJsiExample.release.xcconfig"; sourceTree = "<group>"; };
+		B769682A57AC8D51B9249DC2 /* Pods-NaclJsiExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NaclJsiExample.debug.xcconfig"; path = "Target Support Files/Pods-NaclJsiExample/Pods-NaclJsiExample.debug.xcconfig"; sourceTree = "<group>"; };
+		B887ED670C6DEDF643DFA599 /* Pods-NaclJsiExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NaclJsiExample.release.xcconfig"; path = "Target Support Files/Pods-NaclJsiExample/Pods-NaclJsiExample.release.xcconfig"; sourceTree = "<group>"; };
 		D57A37A7E6691FD6C81AB001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = NaclJsiExample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5444BFD4E0E87F23A7D6428 /* libPods-NaclJsiExample.a in Frameworks */,
+				7DE08AC59F8ADEDD077A9BE4 /* libPods-NaclJsiExample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,7 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				659F10F9A12CB16ED7BC6410 /* libPods-NaclJsiExample.a */,
+				1584C0EABBD77B85B3206DB8 /* libPods-NaclJsiExample.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -97,8 +97,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3B12B62F0328DD5DC984F453 /* Pods-NaclJsiExample.debug.xcconfig */,
-				903C863C0D3E7EC2818993E7 /* Pods-NaclJsiExample.release.xcconfig */,
+				B769682A57AC8D51B9249DC2 /* Pods-NaclJsiExample.debug.xcconfig */,
+				B887ED670C6DEDF643DFA599 /* Pods-NaclJsiExample.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -110,14 +110,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "NaclJsiExample" */;
 			buildPhases = (
-				0DD464C9D9C3B1EAA27924EF /* [CP] Check Pods Manifest.lock */,
+				3A50684C3A6CB0F85CC8D9BC /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				36627A3BF77E4E3F70592969 /* [CP] Embed Pods Frameworks */,
-				BED7BE10FA1F09D9BE530B3F /* [CP] Copy Pods Resources */,
+				8C5862698062EC3D79021DAF /* [CP] Embed Pods Frameworks */,
+				DFFFB7628F90D913F01D5B04 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -187,7 +187,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		0DD464C9D9C3B1EAA27924EF /* [CP] Check Pods Manifest.lock */ = {
+		3A50684C3A6CB0F85CC8D9BC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -209,7 +209,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		36627A3BF77E4E3F70592969 /* [CP] Embed Pods Frameworks */ = {
+		8C5862698062EC3D79021DAF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -226,7 +226,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NaclJsiExample/Pods-NaclJsiExample-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BED7BE10FA1F09D9BE530B3F /* [CP] Copy Pods Resources */ = {
+		DFFFB7628F90D913F01D5B04 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -279,7 +279,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B12B62F0328DD5DC984F453 /* Pods-NaclJsiExample.debug.xcconfig */;
+			baseConfigurationReference = B769682A57AC8D51B9249DC2 /* Pods-NaclJsiExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -306,7 +306,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 903C863C0D3E7EC2818993E7 /* Pods-NaclJsiExample.release.xcconfig */;
+			baseConfigurationReference = B887ED670C6DEDF643DFA599 /* Pods-NaclJsiExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
