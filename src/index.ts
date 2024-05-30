@@ -41,104 +41,323 @@ export const BOX_SEED_LENGTH: BigInt = constants.BOX_SEED_LENGTH;
 export const SECRETBOX_KEY_LENGTH: BigInt = constants.SECRETBOX_KEY_LENGTH;
 export const SECRETBOX_NONCE_LENGTH: BigInt = constants.SECRETBOX_NONCE_LENGTH;
 
-export function aesGenerateKey(): string {
-  return g.aesGenerateKey();
+/**
+ * Encodes a buffer into a base64 string
+ *
+ * @throws when the buffer is not an `Uint8Array`
+ */
+export function encodeBase64(buffer: Uint8Array): string {
+  return g.encodeBase64(buffer.buffer);
 }
 
-export function aesEncrypt(message: string, key: string): AesResult | null {
-  return g.aesEncrypt(message, key);
+/**
+ * Decodes a base64 string into a buffer
+ *
+ * @throws when the given string is not a valid base64 string
+ */
+export function decodeBase64(toEncode: string): Uint8Array {
+  return new Uint8Array(g.decodeBase64(toEncode));
 }
 
+/**
+ * Encodes a buffer into an hexadecimal string
+ *
+ * @throws when buffer is not an `Uint8Array`
+ */
+export function encodeHexadecimal(buffer: Uint8Array): string {
+  return g.encodeHexadecimal(buffer.buffer);
+}
+
+/**
+ * Decodes an hexadecimal string into an Uint8Array
+ *
+ * @throws when the given string is not a valid hexadecimal string
+ */
+export function decodeHexadecimal(toDecode: string): Uint8Array {
+  return new Uint8Array(g.decodeHexadecimal(toDecode));
+}
+
+/**
+ * Encodes a buffer into a UTF-8 string
+ *
+ * @throws when buffer is not an `Uint8Array`
+ */
+export function encodeUtf8(buffer: Uint8Array): string {
+  return g.encodeUtf8(buffer.buffer);
+}
+
+/**
+ * Decodes a UTF-8 string into an `Uint8Array`
+ */
+export function decodeUtf8(input: string): Uint8Array {
+  return new TextEncoder().encode(input);
+}
+
+/**
+ * Generates a key to be used with aesEncrypt and aesDecrypt
+ */
+export function aesGenerateKey(): Uint8Array {
+  const key = g.aesGenerateKey();
+  return new Uint8Array(key);
+}
+
+/**
+ * Encrypts a message with AES-256-GCM using the given key
+ *
+ * @throws when message is not an `Uint8Array`
+ * @throws when key is not an `Uint8Array`
+ * @throws when key length is incorrect
+ */
+export function aesEncrypt(message: Uint8Array, key: Uint8Array): AesResult {
+  const aesResult: { encrypted: ArrayBuffer; iv: ArrayBuffer } = g.aesEncrypt(
+    message.buffer,
+    key.buffer
+  );
+
+  return {
+    encrypted: new Uint8Array(aesResult.encrypted),
+    iv: new Uint8Array(aesResult.iv),
+  };
+}
+
+/**
+ * Decrypts a cipher text with AES-256-GCM using the given key and the initialization vector
+ *
+ * @throws when cipherText is not an `Uint8Array`
+ * @throws when key is not an `Uint8Array`
+ * @throws when key length is incorrect
+ * @throws when iv is not an `Uint8Array`
+ * @throws when iv length is not an `Uint8Array`
+ * @throws when the decryption failed
+ */
 export function aesDecrypt(
-  encryptedMessage: string,
-  key: string,
-  iv: string
-): string | null {
-  return g.aesDecrypt(encryptedMessage, key, iv);
+  cipherText: Uint8Array,
+  key: Uint8Array,
+  iv: Uint8Array
+): Uint8Array {
+  const decrypted: ArrayBuffer = g.aesDecrypt(
+    cipherText.buffer,
+    key.buffer,
+    iv.buffer
+  );
+
+  return new Uint8Array(decrypted);
 }
 
+/**
+ * Generates a key pair to be used with boxSeal and boxOpen
+ */
 export function boxGenerateKey(): KeyPair {
-  return g.boxGenerateKey();
+  const keyPair: { publicKey: ArrayBuffer; secretKey: ArrayBuffer } =
+    g.boxGenerateKey();
+
+  return {
+    publicKey: new Uint8Array(keyPair.publicKey),
+    secretKey: new Uint8Array(keyPair.secretKey),
+  };
 }
 
+/**
+ * Encrypts a message using the recipient's public key and the sender's secret key
+ *
+ * @throws when message is not an `Uint8Array`
+ * @throws when recipientPublicKey is not an `Uint8Array`
+ * @throws when recipientPublicKey length is incorrect
+ * @throws when senderSecretKey is not an `Uint8Array`
+ * @throws when senderSecretKey length is incorrect
+ * @throws when the encryption didn't succeed successfully
+ */
 export function boxSeal(
-  message: string,
-  recipientPublicKey: string,
-  senderSecretKey: string
-): string {
-  return g.boxSeal(message, recipientPublicKey, senderSecretKey);
+  message: Uint8Array,
+  recipientPublicKey: Uint8Array,
+  senderSecretKey: Uint8Array
+): Uint8Array {
+  const encrypted: ArrayBuffer = g.boxSeal(
+    message.buffer,
+    recipientPublicKey.buffer,
+    senderSecretKey.buffer
+  );
+
+  return new Uint8Array(encrypted);
 }
 
+/**
+ * Verifies and decrypts a ciphertext produced by `boxSeal`
+ *
+ * @throws when cipherText is not an `Uint8Array`
+ * @throws when senderPublicKey is not an `Uint8Array`
+ * @throws when senderPublicKey length is incorrect
+ * @throws when recipientSecretKey is not an `Uint8Array`
+ * @throws when recipientSecretKey length is incorrect
+ * @throws when the verification failed
+ */
 export function boxOpen(
-  encryptedMessage: string,
-  senderPublicKey: string,
-  recipientSecretKey: string
-): string {
-  return g.boxOpen(encryptedMessage, senderPublicKey, recipientSecretKey);
+  cipherText: Uint8Array,
+  senderPublicKey: Uint8Array,
+  recipientSecretKey: Uint8Array
+): Uint8Array {
+  const decrypted: ArrayBuffer = g.boxOpen(
+    cipherText.buffer,
+    senderPublicKey.buffer,
+    recipientSecretKey.buffer
+  );
+
+  return new Uint8Array(decrypted);
 }
 
-export function secretboxGenerateKey(): string {
-  return g.secretboxGenerateKey();
+/**
+ * Generates a key to be used with secretboxSeal and secretboxOpen
+ */
+export function secretboxGenerateKey(): Uint8Array {
+  const secretKey = g.secretboxGenerateKey();
+  return new Uint8Array(secretKey);
 }
 
-export function secretboxSeal(message: string, secretKey: string): string {
-  return g.secretboxSeal(message, secretKey);
+/**
+ * Encrypts a message with the given secret key
+ *
+ * @throws when message is not a `Uint8Array`
+ * @throws when secretKey is not a `Uint8Array`
+ * @throws when secretKey length is incorrect
+ * @throws when the encryption didn't complete successfully
+ */
+export function secretboxSeal(
+  message: Uint8Array,
+  secretKey: Uint8Array
+): Uint8Array {
+  const encrypted: ArrayBuffer = g.secretboxSeal(
+    message.buffer,
+    secretKey.buffer
+  );
+
+  return new Uint8Array(encrypted);
 }
 
-export function secretboxOpen(cipherText: string, secretKey: string): string {
-  return g.secretboxOpen(cipherText, secretKey);
+/**
+ * Verifies and decrypts a ciphertext produced by `secretboxSeal`
+ *
+ * @throws when cipherText is not an `Uint8Array`
+ * @throws when secretKey is not an `Uint8Array`
+ * @throws when secretKey length is incorrect
+ * @throws when the verification failed
+ */
+export function secretboxOpen(
+  cipherText: Uint8Array,
+  secretKey: Uint8Array
+): Uint8Array {
+  const decrypted: ArrayBuffer = g.secretboxOpen(
+    cipherText.buffer,
+    secretKey.buffer
+  );
+
+  return new Uint8Array(decrypted);
 }
 
+/**
+ * Generates a key pair for signing and verifying signatures
+ */
 export function signGenerateKey(): KeyPair {
-  return g.signGenerateKey();
+  const keyPair: { publicKey: ArrayBuffer; secretKey: ArrayBuffer } =
+    g.signGenerateKey();
+
+  return {
+    publicKey: new Uint8Array(keyPair.publicKey),
+    secretKey: new Uint8Array(keyPair.secretKey),
+  };
 }
 
+/**
+ * Signs a message with the given secret key
+ *
+ * @throws when message is not a `Uint8Array`
+ * @throws when secretKey is not a `Uint8Array`
+ * @throws when secretKey length is incorrect
+ */
 export function signDetached(
-  message: string,
-  secretKey: string
-): string | null {
-  return g.signDetached(message, secretKey);
+  message: Uint8Array,
+  secretKey: Uint8Array
+): Uint8Array {
+  const signature: ArrayBuffer = g.signDetached(
+    message.buffer,
+    secretKey.buffer
+  );
+
+  return new Uint8Array(signature);
 }
 
+/**
+ * Verifies that the signature is valid given the message the public key
+ *
+ * @throws when message is not a `Uint8Array`
+ * @throws when publicKey is not a `Uint8Array`
+ * @throws when publicKey length is incorrect
+ * @throws when signature is not a `Uint8Array`
+ */
 export function signVerifyDetached(
-  message: string,
-  publicKey: string,
-  signature: string
+  message: Uint8Array,
+  publicKey: Uint8Array,
+  signature: Uint8Array
 ): boolean {
-  return g.signVerifyDetached(message, publicKey, signature);
+  return g.signVerifyDetached(
+    message.buffer,
+    publicKey.buffer,
+    signature.buffer
+  );
 }
 
+/**
+ * Hash a password using the Argon2id algorithm
+ *
+ * @throws when password is not a `Uint8Array`
+ * @throws when the hash computation didn't complete successfully
+ */
 export function argon2idHash(
-  password: string,
+  password: Uint8Array,
   iterations: BigInt,
   memoryLimit: BigInt
 ): string {
-  return g.argon2idHash(password, iterations, memoryLimit);
+  return g.argon2idHash(password.buffer, iterations, memoryLimit);
 }
 
-export function argon2idVerify(hash: string, password: string): boolean {
-  return g.argon2idVerify(hash, password);
+/**
+ * Verifies that `hash` is a valid `password` verification string
+ *
+ * @throws when password is not a `Uint8Array`
+ */
+export function argon2idVerify(hash: string, password: Uint8Array): boolean {
+  return g.argon2idVerify(hash, password.buffer);
 }
 
+/**
+ * Derives a key of the given length
+ *
+ * @throws when password is not a `Uint8Array`
+ * @throws when salt is not a `Uint8Array` or its size is not `ARGON2ID_SALTBYTES`
+ */
 export function argon2idDeriveKey(
-  password: string,
-  salt: string,
+  password: Uint8Array,
+  salt: Uint8Array,
   keyLength: number,
   iterations: BigInt,
   memoryLimit: BigInt
-): string {
-  return g.argon2idDeriveKey(
-    password,
-    salt,
+): Uint8Array {
+  const key = g.argon2idDeriveKey(
+    password.buffer,
+    salt.buffer,
     keyLength,
     iterations,
     memoryLimit
   );
+
+  return new Uint8Array(key);
 }
 
-export function getRandomBytes(
-  size: number | BigInt,
-  encoding: 'base64' | 'hex' = 'base64'
-): string {
-  return g.getRandomBytes(size, encoding);
+/**
+ * Returns a buffer of the given size filled with random bytes
+ *
+ * @throws When the given size is incorrect
+ */
+export function getRandomBytes(size: number | BigInt): Uint8Array {
+  const randomBytes: ArrayBuffer = g.getRandomBytes(size);
+  return new Uint8Array(randomBytes);
 }

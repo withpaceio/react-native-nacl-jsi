@@ -1,5 +1,4 @@
-#ifndef BOX_H
-#define BOX_H
+#pragma once
 
 #include <jsi/jsilib.h>
 #include <jsi/jsi.h>
@@ -7,5 +6,3 @@
 namespace react_native_nacl {
   void install_box(facebook::jsi::Runtime& jsiRuntime);
 }
-
-#endif

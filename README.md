@@ -43,6 +43,13 @@ npx pod-install
 
 ## Usage
 
+## Encoding/decoding
+
+All functions takes and returns `Uint8Array`.
+There are helper functions that support encoding and decoding to and from UTF-8, hexadecimal and base64 strings.
+
+## Example
+
 ```js
 import {
   secretboxGenerateKey,
@@ -51,8 +58,10 @@ import {
 } from 'react-native-nacl-jsi';
 
 const key = secretboxGenerateKey();
-const encrypted = secretboxSeal('encrypt me', key);
+const encrypted = secretboxSeal(decodeUtf8('encrypt me'), key);
 const decrypted = secretboxOpen(encrypted, key);
+
+console.log(encodeUtf8(decrypted));
 ```
 
 ## Public-key authenticated encryption (box)
@@ -64,8 +73,8 @@ function boxGenerateKey(): KeyPair;
 
 // With KeyPair:
 type KeyPair = {
-  publicKey: string;
-  secretKey: string;
+  publicKey: Uint8Array;
+  secretKey: Uint8Array;
 };
 ```
 
@@ -73,20 +82,20 @@ Encrypts and authenticates message using the recipient's public key and the send
 
 ```ts
 function boxSeal(
-  message: string,
-  recipientPublicKey: string,
-  senderSecretKey: string
-): string;
+  message: Uint8Array,
+  recipientPublicKey: Uint8Array,
+  senderSecretKey: Uint8Array
+): Uint8Array;
 ```
 
 Authenticates and decrypts the encrypted message using the sender's public key and the recipient's secret key:
 
 ```ts
 function boxOpen(
-  encryptedMessage: string,
-  senderPublicKey: string,
-  recipientSecretKey
-): string;
+  encryptedMessage: Uint8Array,
+  senderPublicKey: Uint8Array,
+  recipientSecretKey: Uint8Array
+): Uint8Array;
 ```
 
 ## Secret-key authenticated encryption (secretbox)
@@ -94,19 +103,22 @@ function boxOpen(
 Generates a random key for secretbox:
 
 ```ts
-function secretboxGenerateKey(): string;
+function secretboxGenerateKey(): Uint8Array;
 ```
 
 Encrypts and authenticates message using the key:
 
 ```ts
-function secretboxSeal(message: string, secretKey: string): string;
+function secretboxSeal(message: Uint8Array, secretKey: Uint8Array): Uint8Array;
 ```
 
 Authenticates and decrypts the encrypted message using the key:
 
 ```ts
-function secretboxOpen(encryptedMessage: string, secretKey: string): string;
+function secretboxOpen(
+  encryptedMessage: Uint8Array,
+  secretKey: Uint8Array
+): Uint8Array;
 ```
 
 ## Signature
@@ -118,24 +130,27 @@ function signGenerateKey(): KeyPair;
 
 // With KeyPair:
 type KeyPair = {
-  publicKey: string;
-  secretKey: string;
+  publicKey: Uint8Array;
+  secretKey: Uint8Array;
 };
 ```
 
 Signs a message and returns the signature:
 
 ```ts
-function signDetached(messageToSign: string, secretKey: string): string | null;
+function signDetached(
+  messageToSign: Uint8Array,
+  secretKey: Uint8Array
+): Uint8Array;
 ```
 
 Verifies a signature:
 
 ```ts
 function signVerifyDetached(
-  message: string,
-  publicKey: string,
-  signature: string
+  message: Uint8Array,
+  publicKey: Uint8Array,
+  signature: Uint8Array
 ): boolean;
 ```
 
@@ -145,7 +160,7 @@ Hash the password using the Argon2id algorithm:
 
 ```ts
 function argon2idHash(
-  password: string,
+  password: Uint8Array,
   iterations: BigInt,
   memoryLimit: BigInt
 ): string;
@@ -154,7 +169,7 @@ function argon2idHash(
 Verifies a hash and returns `true` if the hash matches the password:
 
 ```ts
-function argon2idVerify(hash: string, password: string): boolean;
+function argon2idVerify(hash: string, password: Uint8Array): boolean;
 ```
 
 ## Key derivation
@@ -163,12 +178,12 @@ Derives the key using a salt and the Argon2id algorithm:
 
 ```ts
 function argon2idDeriveKey(
-  key: string,
-  salt: string,
+  key: Uint8Array,
+  salt: Uint8Array,
   keyLength: number,
   iterations: BigInt,
   memoryLimit: BigInt
-): string;
+): Uint8Array;
 ```
 
 ## AES256-GCM
@@ -176,18 +191,18 @@ function argon2idDeriveKey(
 Generates a random key to use for AES256-GCM encryption:
 
 ```ts
-function aesGenerateKey(): string;
+function aesGenerateKey(): Uint8Array;
 ```
 
 Encrypts the message using the key and returns a `AesResult`:
 
 ```ts
-function aesEncrypt(message: string, key: string): AesResult | null;
+function aesEncrypt(message: Uint8Array, key: Uint8Array): AesResult;
 
 // With AesResult:
 type AesResult = {
-  encrypted: string;
-  iv: string;
+  encrypted: Uint8Array;
+  iv: Uint8Array;
 };
 ```
 
@@ -195,19 +210,16 @@ Decrypts the encrypted message using the initialisation vector `iv` and the key:
 
 ```ts
 function aesDecrypt(
-  encryptedMessage: string,
-  key: string,
-  iv: string
-): string | null;
+  cipherText: Uint8Array,
+  key: Uint8Array,
+  iv: Uint8Array
+): Uint8Array;
 ```
 
 ## Generates random bytes
 
 ```ts
-function getRandomBytes(
-  size: number | BigInt,
-  encoding: 'base64' | 'hex' = 'base64'
-): string;
+function getRandomBytes(size: number | BigInt): Uint8Array;
 ```
 
 ## Contributing

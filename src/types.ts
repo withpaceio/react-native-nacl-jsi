@@ -1,9 +1,9 @@
 export type AesResult = {
-  encrypted: string;
-  iv: string;
+  encrypted: Uint8Array;
+  iv: Uint8Array;
 };
 
 export type KeyPair = {
-  publicKey: string;
-  secretKey: string;
+  publicKey: Uint8Array;
+  secretKey: Uint8Array;
 };

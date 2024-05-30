@@ -1,5 +1,4 @@
-#ifndef ARGON2ID_H
-#define ARGON2ID_H
+#pragma once
 
 #include <jsi/jsilib.h>
 #include <jsi/jsi.h>
@@ -7,5 +6,3 @@
 namespace react_native_nacl {
   void install_argon2id(facebook::jsi::Runtime& jsiRuntime);
 }
-
-#endif

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.9.0)
+project("react-native-nacl-jsi")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -34,10 +35,11 @@ add_library(nacljsi
   ../cpp/argon2id.cpp
   ../cpp/box.cpp
   ../cpp/constants.cpp
+  ../cpp/encoding.cpp
+  ../cpp/helpers.cpp
   ../cpp/random.cpp
   ../cpp/secretbox.cpp
   ../cpp/sign.cpp
-  ../cpp/utils.cpp
   cpp-adapter.cpp
 )
 

@@ -1,6 +1,8 @@
+#include <optional>
+
 #include "argon2id.h"
+#include "helpers.h"
 #include "sodium.h"
-#include "utils.h"
 
 using namespace facebook;
 
@@ -11,16 +13,24 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "argon2idHash"),
       3,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::string password_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-        unsigned long iterations = arguments[1].asBigInt(jsiRuntime).asUint64(jsiRuntime);
-        unsigned long memory_limit = arguments[2].asBigInt(jsiRuntime).asUint64(jsiRuntime);
+        std::optional<jsi::ArrayBuffer> passwordOpt = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!passwordOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idHash password must be an ArrayBuffer");
+        }
+        auto passwordData = passwordOpt.value().data(jsiRuntime);
+        auto passwordSize = passwordOpt.value().size(jsiRuntime);
 
-        char hashed_password[crypto_pwhash_STRBYTES];
-        if (crypto_pwhash_str(hashed_password, password_string.data(), password_string.size(), iterations, memory_limit) != 0) {
-            throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash_str out of memory");
+        auto iterations = arguments[1].asBigInt(jsiRuntime).asUint64(jsiRuntime);
+        auto memoryLimit = arguments[2].asBigInt(jsiRuntime).asUint64(jsiRuntime);
+
+        jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, crypto_pwhash_STRBYTES);
+        uint8_t* hashedPassword = arrayBuffer.data(jsiRuntime);
+
+        if (crypto_pwhash_str((char *)hashedPassword, (const char* const)passwordData, passwordSize, iterations, memoryLimit) != 0) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idHash failed to compute hash");
         }
 
-        return jsi::String::createFromUtf8(jsiRuntime, hashed_password);
+        return jsi::String::createFromUtf8(jsiRuntime, (char*)hashedPassword);
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "argon2idHash", std::move(argon2idHash));
@@ -30,10 +40,16 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "argon2idVerify"),
       2,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::string hash_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string password_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
+        std::string hash = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
 
-        bool result = crypto_pwhash_str_verify(hash_string.data(), password_string.data(), password_string.size()) == 0;
+        std::optional<jsi::ArrayBuffer> passwordOpt = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!passwordOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idVerify password must be an ArrayBuffer");
+        }
+        auto passwordData = passwordOpt.value().data(jsiRuntime);
+        auto passwordSize = passwordOpt.value().size(jsiRuntime);
+
+        bool result = crypto_pwhash_str_verify(hash.data(), (const char* const)passwordData, passwordSize) == 0;
         return jsi::Value(result);
       }
     );
@@ -44,23 +60,34 @@ namespace react_native_nacl {
       jsi::PropNameID::forAscii(jsiRuntime, "argon2idDeriveKey"),
       5,
       [](jsi::Runtime& jsiRuntime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t count) -> jsi::Value {
-        std::string password_string = arguments[0].asString(jsiRuntime).utf8(jsiRuntime);
-        std::string salt_string = arguments[1].asString(jsiRuntime).utf8(jsiRuntime);
-        int key_length = arguments[2].asNumber();
-        unsigned long iterations = arguments[3].asBigInt(jsiRuntime).asUint64(jsiRuntime);
-        unsigned long memory_limit = arguments[4].asBigInt(jsiRuntime).asUint64((jsiRuntime));
+        std::optional<jsi::ArrayBuffer> passwordOpt = getArrayBuffer(jsiRuntime, arguments[0]);
+        if (!passwordOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idDeriveKey password must be an ArrayBuffer");
+        }
+        auto passwordData = passwordOpt.value().data(jsiRuntime);
+        auto passwordSize = passwordOpt.value().size(jsiRuntime);
 
-        std::vector<uint8_t> key(key_length);
-        std::vector<uint8_t> salt = base64ToBin(jsiRuntime, salt_string);
-        if (salt.size() != crypto_pwhash_SALTBYTES) {
-          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] salt length is incorrect");
+        std::optional<jsi::ArrayBuffer> saltOpt = getArrayBuffer(jsiRuntime, arguments[1]);
+        if (!saltOpt.has_value()) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idDeriveKey salt must be an ArrayBuffer");
+        }
+        if (saltOpt.value().size(jsiRuntime) != crypto_pwhash_SALTBYTES) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idDeriveKey salt length is incorrect");
+        }
+        auto saltData = saltOpt.value().data(jsiRuntime);
+
+        auto keyLength = arguments[2].asNumber();
+        auto iterations = arguments[3].asBigInt(jsiRuntime).asUint64(jsiRuntime);
+        auto memoryLimit = arguments[4].asBigInt(jsiRuntime).asUint64((jsiRuntime));
+
+        jsi::ArrayBuffer arrayBuffer = getArrayBuffer(jsiRuntime, keyLength);
+        uint8_t* keyData = arrayBuffer.data(jsiRuntime);
+
+        if (crypto_pwhash((unsigned char*)keyData, keyLength, (char *)passwordData, passwordSize, saltData, iterations, memoryLimit, crypto_pwhash_ALG_ARGON2ID13) != 0) {
+          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] argon2idDeriveKey out of memory");
         }
 
-        if (crypto_pwhash(key.data(), key_length, password_string.data(), password_string.size(), salt.data(), iterations, memory_limit, crypto_pwhash_ALG_ARGON2ID13) != 0) {
-          throw jsi::JSError(jsiRuntime, "[react-native-nacl-jsi] crypto_pwhash out of memory");
-        }
-
-        return jsi::String::createFromUtf8(jsiRuntime, binToBase64(key.data(), key.size(), sodium_base64_VARIANT_ORIGINAL));
+        return arrayBuffer;
       }
     );
     jsiRuntime.global().setProperty(jsiRuntime, "argon2idDeriveKey", std::move(argon2idDeriveKey));
