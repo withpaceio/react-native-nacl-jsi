@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.9.0)
+project("react-native-nacl-jsi")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 17)
