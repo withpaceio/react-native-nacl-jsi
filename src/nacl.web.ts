@@ -1,11 +1,26 @@
 import * as base64 from '@stablelib/base64';
 import * as hex from '@stablelib/hex';
 import * as utf8 from '@stablelib/utf8';
+import { argon2id, argon2Verify } from 'hash-wasm';
 import { box, randomBytes, secretbox, sign } from 'tweetnacl';
 
 import type { AesResult, KeyPair } from './types';
 
 export type { AesResult, KeyPair };
+
+export const ARGON2ID_MEMLIMIT_MIN: BigInt = BigInt(8192);
+export const ARGON2ID_MEMLIMIT_MAX: BigInt = BigInt(4398046510080);
+export const ARGON2ID_MEMLIMIT_INTERACTIVE: BigInt = BigInt(67108864);
+export const ARGON2ID_MEMLIMIT_MODERATE: BigInt = BigInt(268435456);
+export const ARGON2ID_MEMLIMIT_SENSITIVE: BigInt = BigInt(1073741824);
+
+export const ARGON2ID_OPSLIMIT_MIN: BigInt = BigInt(1);
+export const ARGON2ID_OPSLIMIT_MAX: BigInt = BigInt(4294967295);
+export const ARGON2ID_OPSLIMIT_INTERACTIVE: BigInt = BigInt(2);
+export const ARGON2ID_OPSLIMIT_MODERATE: BigInt = BigInt(3);
+export const ARGON2ID_OPSLIMIT_SENSITIVE: BigInt = BigInt(4);
+
+export const ARGON2ID_SALTBYTES: BigInt = BigInt(16);
 
 export const BOX_PUBLIC_KEY_LENGTH: BigInt = BigInt(box.publicKeyLength);
 export const BOX_SECRET_KEY_LENGTH: BigInt = BigInt(box.secretKeyLength);
@@ -305,6 +320,71 @@ export function signVerifyDetached(
   signature: Uint8Array
 ): boolean {
   return sign.detached.verify(message, signature, publicKey);
+}
+
+/**
+ * Hash a password using the Argon2id algorithm
+ *
+ * @throws when password is not a `Uint8Array`
+ * @throws when the hash computation didn't complete successfully
+ */
+export async function argon2idHash(
+  password: Uint8Array,
+  iterations: BigInt,
+  memoryLimit: BigInt
+): Promise<string> {
+  const salt = randomBytes(16);
+
+  const key = await argon2id({
+    password,
+    salt,
+    parallelism: 1,
+    iterations: Number(iterations),
+    memorySize: Number(memoryLimit),
+    hashLength: 32,
+    outputType: 'encoded',
+  });
+
+  return key;
+}
+
+/**
+ * Verifies that `hash` is a valid `password` verification string
+ *
+ * @throws when password is not a `Uint8Array`
+ */
+export async function argon2idVerify(
+  hash: string,
+  password: Uint8Array
+): Promise<boolean> {
+  const isVerified = await argon2Verify({ password, hash });
+  return isVerified;
+}
+
+/**
+ * Derives a key of the given length
+ *
+ * @throws when password is not a `Uint8Array`
+ * @throws when salt is not a `Uint8Array` or its size is not `ARGON2ID_SALTBYTES`
+ */
+export async function argon2idDeriveKey(
+  password: Uint8Array,
+  salt: Uint8Array,
+  keyLength: number,
+  iterations: BigInt,
+  memoryLimit: BigInt
+): Promise<Uint8Array> {
+  const derivedKey = await argon2id({
+    password,
+    salt,
+    parallelism: 1,
+    hashLength: keyLength,
+    iterations: Number(iterations),
+    memorySize: Number(memoryLimit),
+    outputType: 'binary',
+  });
+
+  return derivedKey;
 }
 
 /**

@@ -314,11 +314,11 @@ export function signVerifyDetached(
  * @throws when password is not a `Uint8Array`
  * @throws when the hash computation didn't complete successfully
  */
-export function argon2idHash(
+export async function argon2idHash(
   password: Uint8Array,
   iterations: BigInt,
   memoryLimit: BigInt
-): string {
+): Promise<string> {
   return g.argon2idHash(password.buffer, iterations, memoryLimit);
 }
 
@@ -327,7 +327,10 @@ export function argon2idHash(
  *
  * @throws when password is not a `Uint8Array`
  */
-export function argon2idVerify(hash: string, password: Uint8Array): boolean {
+export async function argon2idVerify(
+  hash: string,
+  password: Uint8Array
+): Promise<boolean> {
   return g.argon2idVerify(hash, password.buffer);
 }
 
@@ -337,13 +340,13 @@ export function argon2idVerify(hash: string, password: Uint8Array): boolean {
  * @throws when password is not a `Uint8Array`
  * @throws when salt is not a `Uint8Array` or its size is not `ARGON2ID_SALTBYTES`
  */
-export function argon2idDeriveKey(
+export async function argon2idDeriveKey(
   password: Uint8Array,
   salt: Uint8Array,
   keyLength: number,
   iterations: BigInt,
   memoryLimit: BigInt
-): Uint8Array {
+): Promise<Uint8Array> {
   const key = g.argon2idDeriveKey(
     password.buffer,
     salt.buffer,
