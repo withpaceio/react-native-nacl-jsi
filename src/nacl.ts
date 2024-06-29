@@ -108,7 +108,10 @@ export function aesGenerateKey(): Uint8Array {
  * @throws when key is not an `Uint8Array`
  * @throws when key length is incorrect
  */
-export function aesEncrypt(message: Uint8Array, key: Uint8Array): AesResult {
+export async function aesEncrypt(
+  message: Uint8Array,
+  key: Uint8Array
+): Promise<AesResult> {
   const aesResult: { encrypted: ArrayBuffer; iv: ArrayBuffer } = g.aesEncrypt(
     message.buffer,
     key.buffer
@@ -130,11 +133,11 @@ export function aesEncrypt(message: Uint8Array, key: Uint8Array): AesResult {
  * @throws when iv length is not an `Uint8Array`
  * @throws when the decryption failed
  */
-export function aesDecrypt(
+export async function aesDecrypt(
   cipherText: Uint8Array,
   key: Uint8Array,
   iv: Uint8Array
-): Uint8Array {
+): Promise<Uint8Array> {
   const decrypted: ArrayBuffer = g.aesDecrypt(
     cipherText.buffer,
     key.buffer,
