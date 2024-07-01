@@ -163,13 +163,13 @@ function argon2idHash(
   password: Uint8Array,
   iterations: BigInt,
   memoryLimit: BigInt
-): string;
+): Promise<string>;
 ```
 
 Verifies a hash and returns `true` if the hash matches the password:
 
 ```ts
-function argon2idVerify(hash: string, password: Uint8Array): boolean;
+function argon2idVerify(hash: string, password: Uint8Array): Promise<boolean>;
 ```
 
 ## Key derivation
@@ -183,7 +183,7 @@ function argon2idDeriveKey(
   keyLength: number,
   iterations: BigInt,
   memoryLimit: BigInt
-): Uint8Array;
+): Promise<Uint8Array>;
 ```
 
 ## AES256-GCM
@@ -197,7 +197,7 @@ function aesGenerateKey(): Uint8Array;
 Encrypts the message using the key and returns a `AesResult`:
 
 ```ts
-function aesEncrypt(message: Uint8Array, key: Uint8Array): AesResult;
+function aesEncrypt(message: Uint8Array, key: Uint8Array): Promise<AesResult>;
 
 // With AesResult:
 type AesResult = {
@@ -213,7 +213,7 @@ function aesDecrypt(
   cipherText: Uint8Array,
   key: Uint8Array,
   iv: Uint8Array
-): Uint8Array;
+): Promise<Uint8Array>;
 ```
 
 ## Generates random bytes
