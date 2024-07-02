@@ -1,6 +1,6 @@
 {
   "name": "react-native-nacl-jsi",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Sodium for React Native with JSI binding",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -103,7 +103,9 @@
     ]
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "release-it": {
     "git": {
@@ -126,7 +128,10 @@
   "eslintConfig": {
     "root": true,
     "parser": "@babel/eslint-parser",
-    "extends": ["@react-native-community", "prettier"],
+    "extends": [
+      "@react-native-community",
+      "prettier"
+    ],
     "rules": {
       "prettier/prettier": [
         "error",
@@ -140,7 +145,10 @@
       ]
     }
   },
-  "eslintIgnore": ["node_modules/", "lib/"],
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
